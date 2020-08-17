@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pet Health</string>
+    <string name="menu_profile">프로필</string>
+    <string name="menu_weekly_report">주간 분석</string>
+</resources>
