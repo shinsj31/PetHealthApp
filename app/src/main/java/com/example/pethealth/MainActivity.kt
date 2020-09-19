@@ -1,7 +1,9 @@
 package com.example.pethealth
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 
 import android.view.MenuItem
 import android.widget.Button
@@ -9,6 +11,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import app.akexorcist.bluetotohspp.library.BluetoothState.REQUEST_CONNECT_DEVICE
+import app.akexorcist.bluetotohspp.library.BluetoothState.REQUEST_ENABLE_BT
+import kotlinx.android.synthetic.main.bluetooth_conect_layout.*
 import kotlinx.android.synthetic.main.main_drawer_layout.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +24,7 @@ import java.util.logging.Handler
 class MainActivity : AppCompatActivity() {
     private lateinit var etID: EditText
     private lateinit var etPW: EditText
-    private lateinit var btService: ConnectBluetooth
+
     private lateinit var mHandler: Handler
 
 
@@ -39,22 +44,18 @@ class MainActivity : AppCompatActivity() {
         var btnJoin: Button = findViewById(R.id.btn_join)
 
 
-        btService = ConnectBluetooth(this);
-
-
 
 
 
         var btnConnectBluetooth: Button = findViewById(R.id.btn_connect_bluetooth)
 
-        if(!btService.getDeviceState()){
-            btnConnectBluetooth.isEnabled = false;
-        }
-
         btnConnectBluetooth.setOnClickListener {
 
-            btService.enableBluetooth();
+            //btService.enableBluetooth();
+            val intent = Intent(this@MainActivity, BluetoothService::class.java)
 
+            //intent.putExtra("user_id", id)
+            startActivityForResult(intent, 1)
 
         }
 
@@ -121,6 +122,8 @@ class MainActivity : AppCompatActivity() {
         else {
             Toast.makeText(this, "Sign in Canceled", Toast.LENGTH_SHORT).show()
         }
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

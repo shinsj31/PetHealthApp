@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    출처: https://dsnight.tistory.com/44 [Development Assemble]
     <!--
  If your app targets Android 9 or lower, you can declare
          ACCESS_COARSE_LOCATION instead.
@@ -37,6 +41,7 @@
         <activity android:name=".HomeActivity" />
         <activity android:name=".DogListActivity" />
         <activity android:name=".NewDogActivity" />
+        <activity android:name=".BluetoothService" />
     </application>
 
 </manifest>
