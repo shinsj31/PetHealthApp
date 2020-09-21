@@ -1,19 +1,13 @@
 package com.example.pethealth
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import app.akexorcist.bluetotohspp.library.BluetoothState.REQUEST_CONNECT_DEVICE
-import app.akexorcist.bluetotohspp.library.BluetoothState.REQUEST_ENABLE_BT
-import kotlinx.android.synthetic.main.bluetooth_conect_layout.*
 import kotlinx.android.synthetic.main.main_drawer_layout.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +20,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etPW: EditText
 
     private lateinit var mHandler: Handler
-
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +35,7 @@ class MainActivity : AppCompatActivity() {
         var btnJoin: Button = findViewById(R.id.btn_join)
 
 
-
-
-
         var btnConnectBluetooth: Button = findViewById(R.id.btn_connect_bluetooth)
-
         btnConnectBluetooth.setOnClickListener {
 
             //btService.enableBluetooth();
@@ -58,7 +45,20 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, 1)
 
         }
+        // BLUETOOTH -------------------------------------------
 
+
+        var btnChart: Button = findViewById(R.id.btn_chart)
+
+        btnChart.setOnClickListener {
+
+            //btService.enableBluetooth();
+            val intent = Intent(this@MainActivity, ChartActivity::class.java)
+
+            //intent.putExtra("user_id", id)
+            startActivityForResult(intent, 1)
+
+        }
 
 
 
@@ -109,6 +109,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(ic_menu_black_)
         supportActionBar?.setDisplayShowTitleEnabled(false)
  */
+
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

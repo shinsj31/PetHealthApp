@@ -26,5 +26,10 @@ android:orientation="vertical">
         android:text="이름"
         android:textAlignment="center" />
 
+    <com.github.mikephil.charting.charts.PieChart
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:id="@+id/piechart"/>
 
 </LinearLayout>

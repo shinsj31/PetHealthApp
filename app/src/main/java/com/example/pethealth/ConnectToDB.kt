@@ -4,17 +4,28 @@ import android.util.Log
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalDate
 
 private val TAG: String = "Connect To DB"
-private val IP_ADDR: String = "125.130.64.113"// "125.130.64.113"//"192.168.10.5"
-private val db_mode: Array<String> = arrayOf("login", "join", "add", "delete", "modify", "list","add","delete", "update", "info")
+private val IP_ADDR: String = "125.130.64.113"// "125.130.64.113"//"192.168.10.2" (http://192.168.10.1/ WAN IP 주소)
+private val db_mode: Array<String> = arrayOf("login", "join", "add", "delete", "modify", "list","add","delete", "update", "info" ,
+    "add" , "all", "date", "today" , "curr"
+)
 
 enum class DB_MODES(var idx: Int) {
-    LOGIN(0), JOIN(1), ADD(2), DEL(3), MODI(4),DLIST(5),DADD(6),DDEL(7),DUPD(8),DINFO(9);
+    LOGIN(0), JOIN(1), ADD(2), DEL(3), MODI(4),DLIST(5),DADD(6),DDEL(7),DUPD(8),DINFO(9) ,
+    ACADD(10) ,ACALL(11) , ACDATAE(12), ACTODAY(13), ACCURR(14);
 }
+
 data class LoginData(var id: String, var pw: String) :Serializable
 data class UserInfo(var login_data: LoginData, var name: String, var email: String , var phone: String) :Serializable
-data class DogInfo (var login_data: LoginData, var d_id: String, var d_name: String, var d_breed: String, var d_height:String, var d_length:String, var d_weight: String, var d_age : String) :Serializable
+data class DogInfo (var login_data: LoginData, var d_id: String, var d_name: String, var d_breed: String, var d_height:String, var d_length:String, var d_weight: String, var d_age : String , var d_goal_activity : Int) :Serializable
+data class ActivityData (var d_id: String, var ac_id: String, var ac_date: LocalDate, var ac_hour : Int , var ac_minute : Int,
+                         var ac_walk: Int , var ac_run : Int , var ac_distance : Int , var ac_heart_rate : Int , var ac_location : String,
+                         var ac_device_id : String , var ac_posture : String) :Serializable
+
+data class DateData (var start: LocalDate, var end:LocalDate ): Serializable
+
 
 public suspend fun doWork(data: ConnectToDB): String{
     lateinit var postParams: String
@@ -69,6 +80,26 @@ public suspend fun doWork(data: ConnectToDB): String{
             phpFileName =  "doginfo"
         }
 
+        DB_MODES.ACADD -> {
+            //postParams = ("d_id=" + data.dog_data.d_id)
+            //phpFileName =  "activitydata"
+        }
+        DB_MODES.ACALL -> {
+            postParams = ("d_id=" + data.dog_data.d_id)
+            phpFileName =  "activitydata"
+        }
+        DB_MODES.ACDATAE -> {
+            postParams = ("d_id=" + data.dog_data.d_id + "&ac_date=" + data.date_data.start)
+            phpFileName =  "activitydata"
+        }
+        DB_MODES.ACTODAY -> {
+            postParams = ("d_id=" + data.dog_data.d_id )
+            phpFileName =  "activitydata"
+        }
+        DB_MODES.ACCURR -> {
+            postParams = ("d_id=" + data.dog_data.d_id )
+            phpFileName =  "activitydata"
+        }
     }
 
     var serverURL: String = "http://" + IP_ADDR + "/" + phpFileName + ".php?mode="+db_mode[data.type.idx]
@@ -127,5 +158,6 @@ class ConnectToDB {
     lateinit var login_data:LoginData
     lateinit var user_data:UserInfo
     lateinit var dog_data:DogInfo
+    lateinit var date_data:DateData
 
 }

@@ -22,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
+
+
 }
 
 dependencies {
@@ -39,7 +43,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.akexorcist:bluetoothspp:1.0.0'
 
-
-
-
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 }
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
