@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
-
+  
         // Get TextViews by Id
         etID = findViewById(R.id.et_id)
         etPW = findViewById(R.id.et_pw)
@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
             etID.isEnabled = false
             etPW.isEnabled = false
             scope.launch {
-                if (doWork(data).contains("success", true)){
+                var loginResult = doWork(data)
+                if (loginResult.contains("success", true)){
                     println("Login success! :-)")
                     CoroutineScope(Dispatchers.Main).launch {
                         Toast.makeText(this@MainActivity, "Login success! :-)", Toast.LENGTH_SHORT).show()
@@ -87,7 +88,8 @@ class MainActivity : AppCompatActivity() {
                     startActivityForResult(intent, 1)
                 }
                 else{
-                    println("Login failed...T^T")
+                    println("Login failed...T^T" + loginResult)
+
                     CoroutineScope(Dispatchers.Main).launch {
                         Toast.makeText(this@MainActivity, "Login failed...T^T", Toast.LENGTH_SHORT).show()
                         etID.isEnabled = true
@@ -102,13 +104,25 @@ class MainActivity : AppCompatActivity() {
 
             startActivityForResult(intent, 1)
         }
-/*
+
+        var btnServerAddress: Button = findViewById(R.id.btn_server)
+        btnServerAddress.setOnClickListener {
+            Toast.makeText(this@MainActivity, "Change Server Address!", Toast.LENGTH_SHORT).show()
+            ChangeServerIP()
+        }
+        var btnTest: Button = findViewById(R.id.btn_test)
+        btnTest.setOnClickListener {
+            //StopBluetoothService()
+
+        }
+
+        /*
         // Set Toolbar on main activity
         setSupportActionBar(main_layout_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(ic_menu_black_)
         supportActionBar?.setDisplayShowTitleEnabled(false)
- */
+        */
 
 
 

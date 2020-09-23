@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/main_menu_layout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical">
+    android:id="@+id/main_menu_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<!-- Tool Bar -->
-<include layout="@layout/layout_toolbar"/>
+    <!-- Tool Bar -->
+    <include layout="@layout/layout_toolbar" />
 
-<!-- Main View -->
+    <!-- Main View -->
 
 
-    <Button
-        android:id="@+id/btn_dog_list"
-        android:layout_width="250dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Dog List" />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btn_dog_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Dog List" />
+
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="연결"
+            />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="보내기"
+            />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -26,10 +51,27 @@ android:orientation="vertical">
         android:text="이름"
         android:textAlignment="center" />
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:id="@+id/piechart"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/piechart"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center">
+
+        </com.github.mikephil.charting.charts.PieChart>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/piechart2"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center">
+
+        </com.github.mikephil.charting.charts.PieChart>
+    </LinearLayout>
+
 
 </LinearLayout>

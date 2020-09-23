@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,13 +17,18 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 import static java.sql.DriverManager.println;
 
 public class BluetoothService extends AppCompatActivity {
-
-    private BluetoothSPP bt;
+    public BluetoothSPP bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_conect_layout);
+
+        if(bt != null ){
+            bt.stopService(); //블루투스 중지
+            Toast.makeText(BluetoothService.this, "Stop prev bluetooth connection", Toast.LENGTH_SHORT).show();
+        }
+
         bt = new BluetoothSPP(this); //Initializing
 
         if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
@@ -33,10 +39,12 @@ public class BluetoothService extends AppCompatActivity {
         }
 
 
+        // --------------------------------------- 데이터 수신 시 --------------------------------------- //
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(BluetoothService.this, message, Toast.LENGTH_SHORT).show();
                 println(message);
+                // 명령 실행 ----------------------------------------------
             }
         });
 
@@ -45,6 +53,9 @@ public class BluetoothService extends AppCompatActivity {
                 Toast.makeText(getApplicationContext()
                         , "Connected to " + name + "\n" + address
                         , Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+
+                finish();
             }
 
             public void onDeviceDisconnected() { //연결해제
@@ -66,6 +77,7 @@ public class BluetoothService extends AppCompatActivity {
                 } else {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+
                 }
             }
         });
@@ -73,7 +85,7 @@ public class BluetoothService extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
-        bt.stopService(); //블루투스 중지
+        //bt.stopService(); //블루투스 중지
     }
 
     public void onStart() {

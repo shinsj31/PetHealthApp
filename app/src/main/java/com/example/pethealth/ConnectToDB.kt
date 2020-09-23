@@ -7,7 +7,9 @@ import java.net.URL
 import java.time.LocalDate
 
 private val TAG: String = "Connect To DB"
-private val IP_ADDR: String = "125.130.64.113"// "125.130.64.113"//"192.168.10.2" (http://192.168.10.1/ WAN IP 주소)
+private val SERVER_IPs: Array<String> = arrayOf("125.130.64.113" , "220.93.33.240")
+private var IP_ADDR: String = "125.130.64.113"// 수정 서버 "125.130.64.113"//"192.168.10.2" (http://192.168.10.1/ WAN IP 주소)
+// 석호 서버 "220.93.33.240"
 private val db_mode: Array<String> = arrayOf("login", "join", "add", "delete", "modify", "list","add","delete", "update", "info" ,
     "add" , "all", "date", "today" , "curr"
 )
@@ -26,8 +28,17 @@ data class ActivityData (var d_id: String, var ac_id: String, var ac_date: Local
 
 data class DateData (var start: LocalDate, var end:LocalDate ): Serializable
 
+public fun ChangeServerIP (){
+    var i = SERVER_IPs.indexOf(IP_ADDR)
+    if(i+1 < SERVER_IPs.size)
+        i++
+    else
+        i = 0
 
-public suspend fun doWork(data: ConnectToDB): String{
+    IP_ADDR = SERVER_IPs[i];
+}
+
+public /*suspend*/ fun doWork(data: ConnectToDB): String{
     lateinit var postParams: String
     lateinit var phpFileName: String
 
