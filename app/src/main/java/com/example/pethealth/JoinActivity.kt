@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class JoinActivity: AppCompatActivity() {
-    private val IP_ADDR: String = "192.168.10.2"
     private lateinit var et_id: EditText
     private lateinit var et_pw: EditText
     private lateinit var et_name: EditText

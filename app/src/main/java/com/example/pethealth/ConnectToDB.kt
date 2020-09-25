@@ -69,7 +69,11 @@ public /*suspend*/ fun doWork(data: ConnectToDB): String{
         }
         // 새로운 반려견을 추가한다.
         DB_MODES.DADD ->{
-            postParams = ("u_id=" + data.login_data.id + "&d_id=" + data.dog_data.d_id)
+            // u_id, d_name, d_breed, d_height , d_length , d_weight , d_age, d_goal_activity
+            postParams = (   "u_id=" + data.login_data.id    + "&d_name=" + data.dog_data.d_name  + "&d_breed=" + data.dog_data.d_breed
+                    + "&d_height=" + data.dog_data.d_height  + "&d_length=" + data.dog_data.d_length
+                    + "&d_weight=" + data.dog_data.d_weight  + "&d_age=" + data.dog_data.d_age +"&d_goal_activity=" + data.dog_data.d_goal_activity)
+
             phpFileName =  "doginfo"
         }
         // 반려견 정보를 제거한다.
@@ -82,7 +86,7 @@ public /*suspend*/ fun doWork(data: ConnectToDB): String{
             postParams = ("u_id=" + data.login_data.id + "&d_id=" + data.dog_data.d_id
                     + "&d_name=" + data.dog_data.d_name  + "&d_breed=" + data.dog_data.d_breed
                     + "&d_height=" + data.dog_data.d_height  + "&d_length=" + data.dog_data.d_length
-                    + "&d_weight=" + data.dog_data.d_weight  + "&d_age=" + data.dog_data.d_age)
+                    + "&d_weight=" + data.dog_data.d_weight  + "&d_age=" + data.dog_data.d_age + "&d_goal_activity=" + data.dog_data.d_goal_activity)
             phpFileName =  "doginfo"
         }
         // 반려견 정보를 얻는다.

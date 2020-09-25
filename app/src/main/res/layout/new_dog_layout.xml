@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="80dp"
+    android:paddingTop="40dp"
     android:paddingLeft="40dp"
     android:paddingRight="40dp">
 
@@ -178,13 +178,37 @@
             android:background="@drawable/round_border_thin"
             android:inputType="numberDecimal"/>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linear_new_dog_goal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Goal"
+            android:textSize="20dp" />
+        <EditText
+            android:id="@+id/et_new_dog_goal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@drawable/round_border_thin"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
     <!-- Join -->
     <Button
         android:id="@+id/btn_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Join"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center"/>
 </LinearLayout>

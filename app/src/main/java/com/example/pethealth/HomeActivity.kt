@@ -14,24 +14,25 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListe
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.json.JSONException
 import java.sql.DriverManager
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 enum class HOME_RESULT(var idx: Int) {
-    SELECT_DOG(10), NEW_DOG(11)
+    SELECT_DOG(10), NEW_DOG(11) , MODI_DOG(12) , CANCLE_DOG(13)
 }
 
 class HomeActivity: AppCompatActivity() {
@@ -43,6 +44,7 @@ class HomeActivity: AppCompatActivity() {
     private var dog_index = -1 // save local
 
     private var pieChart: PieChart? = null
+    private var combinedChart: CombinedChart? = null
 
     private var bluetoothAddress: String = "24:6F:28:9D:47:76"
 
@@ -77,12 +79,12 @@ class HomeActivity: AppCompatActivity() {
 
                 try {
 
-                    ConvertJsonToDogList();
-                    dog_index = 0 // 로컬 데이터 읽어오기
+                    dogDatas = ConvertJsonToDogInfos(dog_list_json, user_id)
+                    dog_index = 0 //TODO:로컬 데이터 읽어오기
                     val thread = ShowMyDogActivity()
                     thread.start()
 
-                }catch (e: JSONException ) {
+                }catch (e: JSONException) {
 
                     e.printStackTrace();
                 }
@@ -95,7 +97,8 @@ class HomeActivity: AppCompatActivity() {
                 CoroutineScope(Dispatchers.Main).launch {
                     job_get_dog_list.join()
                     val intent: Intent = Intent(this@HomeActivity, DogListActivity::class.java)
-                    intent.putExtra("dog_list",dogDatas)
+                    intent.putExtra("user_id", user_id)
+                    intent.putExtra("dog_list", dogDatas)
                     startActivityForResult(intent, 1)
                 }
 
@@ -120,7 +123,7 @@ class HomeActivity: AppCompatActivity() {
 
         if (bt != null) {
             bt!!.stopService() //블루투스 중지
-            Toast.makeText(this@HomeActivity,"Stop prev bluetooth connection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@HomeActivity, "Stop prev bluetooth connection", Toast.LENGTH_SHORT).show()
         }
         bt = BluetoothSPP(this) //Initializing
         if (!bt!!.isBluetoothAvailable) { //블루투스 사용 불가
@@ -144,13 +147,19 @@ class HomeActivity: AppCompatActivity() {
         bt!!.setBluetoothConnectionListener(object : BluetoothConnectionListener {
             //연결됐을 때
             override fun onDeviceConnected(name: String, address: String) {
-                Toast.makeText(applicationContext, "Connected to $name\n$address", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "Connected to $name\n$address",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
             override fun onDeviceDisconnected() { //연결해제
-                Toast.makeText( applicationContext , "Connection lost", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Connection lost", Toast.LENGTH_SHORT).show()
             }
+
             override fun onDeviceConnectionFailed() { //연결실패
-                Toast.makeText( applicationContext, "Unable to connect", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Unable to connect", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -195,8 +204,8 @@ class HomeActivity: AppCompatActivity() {
     //==================================================
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun SumActivityData (datas: ArrayList<ActivityData> ): ActivityData {
-        var sum: ActivityData = ActivityData("","", LocalDate.now(),0,0,0,0,0,0,"","","")
+    fun SumActivityData(datas: ArrayList<ActivityData>): ActivityData {
+        var sum: ActivityData = ActivityData("", "", LocalDate.now(), 0, 0, 0, 0, 0, 0, "", "", "")
 
         for( d in datas) {
 
@@ -227,9 +236,111 @@ class HomeActivity: AppCompatActivity() {
         description.setTextSize(15f)
         pieChart!!.description = description
 
+        combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+        SetCombineChart()
+
     }
 
-    fun AddPieChart (walk:Int, goal: Int){
+
+    private val mMonths = arrayOf(
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
+    )
+
+
+    private val itemcount = 12
+
+     fun SetCombineChart() {
+
+        combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+        combinedChart!!.description.isEnabled = false
+        combinedChart!!.setBackgroundColor(Color.WHITE)
+        combinedChart!!.setDrawGridBackground(false)
+        combinedChart!!.setDrawBarShadow(false)
+        combinedChart!!.isHighlightFullBarEnabled = false
+        combinedChart!!.drawOrder = arrayOf<CombinedChart.DrawOrder>(
+            CombinedChart.DrawOrder.BAR,
+            CombinedChart.DrawOrder.BUBBLE,
+            CombinedChart.DrawOrder.CANDLE,
+            CombinedChart.DrawOrder.LINE,
+            CombinedChart.DrawOrder.SCATTER
+        )
+        val l = combinedChart!!.legend
+        l.isWordWrapEnabled = true
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
+        l.setDrawInside(false)
+
+        val rightAxis = combinedChart!!.axisRight
+        rightAxis.setDrawGridLines(false)
+        rightAxis.granularity = 10f
+        rightAxis.axisMinimum = 0f
+
+        val leftAxis = combinedChart!!.axisLeft
+        leftAxis.setDrawGridLines(false)
+        leftAxis.granularity = 10f // 한칸의 크기
+        leftAxis.axisMinimum = 0f
+        val xAxis = combinedChart!!.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTH_SIDED
+        xAxis.axisMinimum = 0f
+        xAxis.granularity = 1f
+
+        xAxis.valueFormatter =
+            IAxisValueFormatter { value, axis -> mMonths[value.toInt() % mMonths.size] }
+
+        val data = CombinedData()
+        data.setData(generateLineData())
+        data.setData(generateBarData())
+         data.setData(generateBarData())
+        xAxis.axisMaximum = data.xMax + 0.25f
+         combinedChart!!.data = data
+         combinedChart!!.invalidate()
+    }
+
+    private fun generateLineData(): LineData? {
+        val d = LineData()
+        val entries = ArrayList<Entry>()
+        for (index in 0 until itemcount) {
+            entries.add(Entry(index + 0.5f, getRandom(15f, 5f)))
+        }
+        val set = LineDataSet(entries, "Line DataSet")
+        set.color = Color.rgb(0, 100, 0)
+        set.lineWidth = 2.5f
+        set.setCircleColor(Color.rgb(0, 100, 0))
+        set.circleRadius = 5f
+        set.fillColor = Color.rgb(0, 100, 0)
+        set.mode = LineDataSet.Mode.CUBIC_BEZIER
+        set.setDrawValues(true)
+        set.valueTextSize = 10f
+        set.valueTextColor = Color.rgb(0, 100, 0)
+        set.axisDependency = YAxis.AxisDependency.LEFT
+        d.addDataSet(set)
+        return d
+    }
+
+    private fun generateBarData(): BarData? {
+        val entries = ArrayList<BarEntry>()
+        for (index in 0 until itemcount) {
+            var entry = BarEntry( index.toFloat() , getRandom(25f, 25f))
+            entries.add(entry)
+        }
+        val set = BarDataSet(entries, "Bar DataSet")
+        set.color = Color.rgb(60, 220, 78)
+        set.valueTextColor = Color.rgb(60, 220, 78)
+        set.valueTextSize = 10f
+        set.axisDependency = YAxis.AxisDependency.RIGHT
+        return BarData(set)
+    }
+
+    private fun getRandom(range: Float, startsfrom: Float): Float {
+        return (Math.random() * range).toFloat() + startsfrom
+    }
+
+
+
+
+
+    fun AddPieChart(walk: Int, goal: Int){
         val yValues = ArrayList<PieEntry>()
         yValues.add(PieEntry(walk.toFloat(), "Walk"))
 
@@ -296,22 +407,26 @@ class HomeActivity: AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Toast.makeText(this, "result: " + resultCode, Toast.LENGTH_SHORT).show()
-        if(resultCode == HOME_RESULT.SELECT_DOG.idx) { // -1
+        if(resultCode == HOME_RESULT.SELECT_DOG.idx || resultCode == HOME_RESULT.CANCLE_DOG.idx ) { // -1
             if(data != null){
-                dog_index = data.extras!!.getInt("dog_index")
-                Toast.makeText(this, "INDEX : " + dog_index, Toast.LENGTH_SHORT).show()
+                if(resultCode == HOME_RESULT.SELECT_DOG.idx){
+                    Toast.makeText(this, "INDEX : " + dog_index, Toast.LENGTH_SHORT).show()
+                    dog_index = data.extras!!.getInt("dog_index")
+
+                }
+
+                dogDatas = data.getCharSequenceArrayListExtra("dog_list") as ArrayList<DogInfo>
+
                 val thread = ShowMyDogActivity()
                 thread.start()
-            }
-        }
-        else {
 
+            }
         }
 
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
             if (resultCode == Activity.RESULT_OK) {
                 val address = data!!.extras!!.getString(BluetoothState.EXTRA_DEVICE_ADDRESS)
-                println( "BLUETOOTH ADDRESS : " + address);
+                println("BLUETOOTH ADDRESS : " + address);
                 //*************** 블루투스 주소 정보 저장 할 것! ****************************//
                 bt!!.connect(address)
             }
@@ -321,7 +436,7 @@ class HomeActivity: AppCompatActivity() {
                 bt!!.startService(BluetoothState.DEVICE_OTHER)
                 BluetoothServiceSet()
             } else {
-                Toast.makeText( applicationContext  , "Bluetooth was not enabled." , Toast.LENGTH_SHORT ).show()
+                Toast.makeText(applicationContext, "Bluetooth was not enabled.", Toast.LENGTH_SHORT).show()
                 val btnSend =  findViewById<Button>(R.id.btnSend) //데이터 전송
                 btnSend.isEnabled = false;
             }
@@ -330,54 +445,7 @@ class HomeActivity: AppCompatActivity() {
 
 
 
-    fun ConvertJsonToDogList (){
-        var jarray = JSONArray(dog_list_json);   // JSONArray 생성
-        for( i in 0..(jarray.length() - 1)) {
-
-            var jObject = jarray.getJSONObject(i) // JSONObject 추출
-            var d_id = jObject.getString("d_id")
-            var d_name = jObject.getString("d_name")
-            var d_breed = jObject.getString("d_breed")
-
-            var d_height = jObject.getString("d_height")
-            var d_length = jObject.getString("d_length")
-            var d_weight = jObject.getString("d_weight")
-            var d_age = jObject.getString("d_age")
-            var d_goal_activity = jObject.getInt("d_goal_activity")
-
-            var info = DogInfo(LoginData(user_id, "") ,d_id , d_name, d_breed, d_height, d_length, d_weight, d_age, d_goal_activity)
-            dogDatas.add(info)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun ConvertJsonToActivityData (_json: String ): ArrayList<ActivityData>{
-        var _activity_datas = ArrayList<ActivityData>()
-        var jarray = JSONArray(_json);   // JSONArray 생성
-
-        for( i in 0..(jarray.length() - 1)) {
-
-            var jObject = jarray.getJSONObject(i) // JSONObject 추출
-
-            var d_id = jObject.getString("d_id")
-            var ac_id = jObject.getString("ac_id")
-            var ac_date =  LocalDate.parse(jObject.getString("ac_date") , DateTimeFormatter.ISO_DATE);
-            var ac_hour = jObject.getInt("ac_hour")
-            var ac_minute = jObject.getInt("ac_minute")
-            var ac_walk = jObject.getInt("ac_walk")
-            var ac_run  = jObject.getInt("ac_run")
-            var ac_distance  = jObject.getInt("ac_distance")
-            var ac_heart_rate  = jObject.getInt("ac_heart_rate")
-            var ac_location = jObject.getString("ac_location")
-            var ac_device_id = jObject.getString("ac_device_id")
-            var ac_posture = jObject.getString("ac_posture")
 
 
-            var info = ActivityData( d_id,ac_id, ac_date , ac_hour , ac_minute, ac_walk ,ac_run, ac_distance ,ac_heart_rate,ac_location,ac_device_id,ac_posture )
-            _activity_datas.add(info)
-        }
-
-        return _activity_datas
-    }
 
 }

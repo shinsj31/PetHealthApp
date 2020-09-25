@@ -24,15 +24,17 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 
 public class DoglistAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<String> array_mountain;
+    private ArrayList<DogInfo> array_mountain;
     private ViewHolder mViewHolder;
 
     private Activity activity;
-
-    public DoglistAdapter(Context mContext, ArrayList<String> array_mountain , Activity activity) {
+    private String id;
+    private  ArrayList<DogInfo> dogInfo;
+    public DoglistAdapter(Context mContext, ArrayList<DogInfo> array_mountain , Activity activity, String id) {
         this.mContext = mContext;
         this.array_mountain = array_mountain;
         this.activity = activity;
+        this.id= id;
     }
 
     @Override
@@ -63,19 +65,21 @@ public class DoglistAdapter extends BaseAdapter {
         }
 
         // View에 Data 세팅
-        final String name = array_mountain.get(position);
-        final int index = position;
-        mViewHolder.btn.setText(name);
 
-        if(mViewHolder.btn != null){
+        final DogInfo dogInfo = array_mountain.get(position);
+        final int index = position;
+        mViewHolder.btn_select.setText(dogInfo.getD_name());
+
+        if(mViewHolder.btn_select != null){
             //buttons.add(btn);
 
-            mViewHolder.btn.setOnClickListener(new View.OnClickListener() {
+            mViewHolder.btn_select.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Toast.makeText(mContext, name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, dogInfo.getD_name(), Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(mContext, HomeActivity.class);
                     intent.putExtra("dog_index", index); // 송신
+                    intent.putExtra("dog_list",array_mountain);
 
                     activity.setResult(HOME_RESULT.SELECT_DOG.getIdx(), intent);
                     activity.finish();
@@ -83,16 +87,41 @@ public class DoglistAdapter extends BaseAdapter {
             });
 
         }
+        if(mViewHolder.btn_modify != null){
+            //buttons.add(btn);
 
+            mViewHolder.btn_modify.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Toast.makeText(mContext, dogInfo.getD_name(), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(mContext, NewDogActivity.class);
+                    intent.putExtra("user_id",id);
+                    intent.putExtra("dname",dogInfo.getD_name());
+                    intent.putExtra("dbreed",dogInfo.getD_breed());
+                    intent.putExtra("dheight",dogInfo.getD_height());
+                    intent.putExtra("dlength",dogInfo.getD_length());
+                    intent.putExtra("dweight",dogInfo.getD_weight());
+                    intent.putExtra("dage",dogInfo.getD_age());
+                    intent.putExtra("dgoal",dogInfo.getD_goal_activity()+"");
+                    intent.putExtra("d_id",dogInfo.getD_id());
+
+                    activity.startActivityForResult(intent, 1);
+
+
+                }
+            });
+
+        }
         return convertView;
     }
 
 
 
     public class ViewHolder {
-        private Button btn;
+        private Button btn_select ,btn_modify;
         public ViewHolder(View convertView) {
-            btn = (Button) convertView.findViewById(R.id.tv_dog_name);
+            btn_select = (Button) convertView.findViewById(R.id.tv_dog_name);
+            btn_modify = convertView.findViewById(R.id.btn_dog_modify);
 
         }
 
