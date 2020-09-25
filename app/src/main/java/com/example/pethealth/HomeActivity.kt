@@ -29,11 +29,95 @@ import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.sql.DriverManager
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 enum class HOME_RESULT(var idx: Int) {
     SELECT_DOG(10), NEW_DOG(11) , MODI_DOG(12) , CANCLE_DOG(13)
 }
+
+public class AnalyzedActivityData {
+    private var recordedWalk = Array<Int>(24*60 ,{0})
+    private var recordedRun = Array<Int>(24*60 ,{0})
+    private var recordedHeartRate = Array<Int>(24*60 ,{0})
+    private var walkPerHour = IntArray(24 , {0})  // 시간 당 걷기 수
+    private var runPerHour = IntArray(24 , {0})  // 시간 당 뛰기 수
+    private var movementPerHour = IntArray(24 , {0})  // 시간 당 움직임
+    private var heartRatePerHour= IntArray(24 , {0})  // 시간 당 평균 심박수
+    private var allMovement: Int = 0  // 하루 총 움직임
+    private var avgDailyWalk: Int = 0  // 평균 걷기
+    private var avgDailyRun: Int = 0  // 평균 뛰기
+    private var avgDailyMovement: Int = 0  // 평균 움직임
+    private var avgDailyHeartRate: Int = 0  // 평균 심박수
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    public fun AnalyzeActivity (datas : ArrayList<ActivityData> ){
+        for(data in datas){
+            var recordTime =  data.ac_hour * 60 + data.ac_minute;
+            println( "Record Time : " + recordTime);
+            if( recordTime < recordedWalk.size && recordedWalk[recordTime] == 0){
+                recordedWalk[recordTime] = data.ac_walk;
+                recordedRun[recordTime] = data.ac_walk;
+                recordedHeartRate[recordTime] = data.ac_heart_rate;
+
+                allMovement += data.ac_walk + data.ac_walk;
+            }
+        }
+        val date: LocalDateTime = LocalDateTime.now()
+        var cnt = 0
+        var sumWalk = 0
+        var sumRun = 0
+        var sumHeartRate = 0
+
+        for(minute in   0.. date.minute){
+            var recordTime = date.hour * 60 + minute
+
+            cnt++;
+            sumWalk +=  recordedWalk[recordTime]
+            sumRun +=  recordedRun[recordTime]
+            sumHeartRate +=  recordedHeartRate[recordTime]
+
+        }
+        walkPerHour[date.hour] = sumWalk / cnt
+        runPerHour[date.hour] = sumRun / cnt
+        movementPerHour[date.hour] = (sumWalk + sumRun) / cnt
+        heartRatePerHour[date.hour] = sumHeartRate /cnt
+
+        var lastCnt = cnt
+        cnt = 0
+        sumWalk = 0
+        sumRun = 0
+        sumHeartRate = 0
+        for(hour in   0.. date.hour){
+            if(hour != date.hour){
+                cnt++;
+                sumWalk +=  walkPerHour[hour] * 60
+                sumRun +=  runPerHour[hour] * 60
+                sumHeartRate +=  heartRatePerHour[hour] * 60
+            }
+            else {
+                sumWalk +=  walkPerHour[hour] * lastCnt
+                sumRun +=  runPerHour[hour] * lastCnt
+                sumHeartRate +=  heartRatePerHour[hour] * lastCnt
+            }
+
+        }
+
+        avgDailyWalk = sumWalk / (cnt*60 + lastCnt)
+        avgDailyRun  = sumRun / (cnt*60 + lastCnt)
+        avgDailyMovement  = (sumWalk + sumRun) / (cnt*60 + lastCnt)
+        avgDailyHeartRate = sumHeartRate /(cnt*60 + lastCnt)
+
+
+    }
+
+    // 가장 많이 움직인 시각
+    // 가장 적게 움직인 시각
+    // 가장 높은 분당 심박수 시간당 심박수
+    // 가장 낮은 분당 심박수 시간당 심박수
+
+}
+
 
 class HomeActivity: AppCompatActivity() {
     private lateinit var user_id: String
@@ -47,6 +131,10 @@ class HomeActivity: AppCompatActivity() {
     private var combinedChart: CombinedChart? = null
 
     private var bluetoothAddress: String = "24:6F:28:9D:47:76"
+
+    private val mQuarter = arrayOf(
+        "0", "3", "6", "9", "12", "15", "18", "21"
+    )
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -242,12 +330,7 @@ class HomeActivity: AppCompatActivity() {
     }
 
 
-    private val mMonths = arrayOf(
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
-    )
 
-
-    private val itemcount = 12
 
      fun SetCombineChart() {
 
@@ -286,12 +369,12 @@ class HomeActivity: AppCompatActivity() {
         xAxis.granularity = 1f
 
         xAxis.valueFormatter =
-            IAxisValueFormatter { value, axis -> mMonths[value.toInt() % mMonths.size] }
+            IAxisValueFormatter { value, axis -> mQuarter[value.toInt() % mQuarter.size] }
 
         val data = CombinedData()
         data.setData(generateLineData())
         data.setData(generateBarData())
-         data.setData(generateBarData())
+        data.setData(generateBarData())
         xAxis.axisMaximum = data.xMax + 0.25f
          combinedChart!!.data = data
          combinedChart!!.invalidate()
@@ -300,8 +383,8 @@ class HomeActivity: AppCompatActivity() {
     private fun generateLineData(): LineData? {
         val d = LineData()
         val entries = ArrayList<Entry>()
-        for (index in 0 until itemcount) {
-            entries.add(Entry(index + 0.5f, getRandom(15f, 5f)))
+        for (index in 0 until mQuarter.size) {
+            entries.add(Entry(index.toFloat(), getRandom(15f, 5f)))
         }
         val set = LineDataSet(entries, "Line DataSet")
         set.color = Color.rgb(0, 100, 0)
@@ -320,10 +403,10 @@ class HomeActivity: AppCompatActivity() {
 
     private fun generateBarData(): BarData? {
         val entries = ArrayList<BarEntry>()
-        for (index in 0 until itemcount) {
-            var entry = BarEntry( index.toFloat() , getRandom(25f, 25f))
-            entries.add(entry)
-        }
+        for (index in 0 until mQuarter.size) {
+            //var entry =
+            entries.add(BarEntry( index.toFloat() , getRandom(25f, 25f)))
+       }
         val set = BarDataSet(entries, "Bar DataSet")
         set.color = Color.rgb(60, 220, 78)
         set.valueTextColor = Color.rgb(60, 220, 78)
