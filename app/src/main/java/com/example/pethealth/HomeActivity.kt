@@ -28,99 +28,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.sql.DriverManager
-import java.time.LocalDate
-import java.time.LocalDateTime
-
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 enum class HOME_RESULT(var idx: Int) {
     SELECT_DOG(10), NEW_DOG(11) , MODI_DOG(12) , CANCLE_DOG(13)
 }
 
-public class AnalyzedActivityData {
-    private var recordedWalk = Array<Int>(24*60 ,{0})
-    private var recordedRun = Array<Int>(24*60 ,{0})
-    private var recordedHeartRate = Array<Int>(24*60 ,{0})
-    private var walkPerHour = IntArray(24 , {0})  // 시간 당 걷기 수
-    private var runPerHour = IntArray(24 , {0})  // 시간 당 뛰기 수
-    private var movementPerHour = IntArray(24 , {0})  // 시간 당 움직임
-    private var heartRatePerHour= IntArray(24 , {0})  // 시간 당 평균 심박수
-    private var allMovement: Int = 0  // 하루 총 움직임
-    private var avgDailyWalk: Int = 0  // 평균 걷기
-    private var avgDailyRun: Int = 0  // 평균 뛰기
-    private var avgDailyMovement: Int = 0  // 평균 움직임
-    private var avgDailyHeartRate: Int = 0  // 평균 심박수
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    public fun AnalyzeActivity (datas : ArrayList<ActivityData> ){
-        println("!! AnalyzeActivity")
-        for(data in datas){
-            var recordTime =  data.ac_hour * 60 + data.ac_minute;
-            println( "Record Time : " + recordTime);
-            if( recordTime < recordedWalk.size && recordedWalk[recordTime] == 0){
-                recordedWalk[recordTime] = data.ac_walk;
-                recordedRun[recordTime] = data.ac_walk;
-                recordedHeartRate[recordTime] = data.ac_heart_rate;
-
-                allMovement += data.ac_walk + data.ac_walk;
-            }
-        }
-        val date: LocalDateTime = LocalDateTime.now()
-        var cnt = 0
-        var sumWalk = 0
-        var sumRun = 0
-        var sumHeartRate = 0
-
-        for(minute in   0.. date.minute){
-            var recordTime = date.hour * 60 + minute
-
-            cnt++;
-            sumWalk +=  recordedWalk[recordTime]
-            sumRun +=  recordedRun[recordTime]
-            sumHeartRate +=  recordedHeartRate[recordTime]
-
-        }
-        walkPerHour[date.hour] = sumWalk / cnt
-        runPerHour[date.hour] = sumRun / cnt
-        movementPerHour[date.hour] = (sumWalk + sumRun) / cnt
-        heartRatePerHour[date.hour] = sumHeartRate /cnt
-
-        var lastCnt = cnt
-        cnt = 0
-        sumWalk = 0
-        sumRun = 0
-        sumHeartRate = 0
-        for(hour in   0.. date.hour){
-            if(hour != date.hour){
-                cnt++;
-                sumWalk +=  walkPerHour[hour] * 60
-                sumRun +=  runPerHour[hour] * 60
-                sumHeartRate +=  heartRatePerHour[hour] * 60
-            }
-            else {
-                sumWalk +=  walkPerHour[hour] * lastCnt
-                sumRun +=  runPerHour[hour] * lastCnt
-                sumHeartRate +=  heartRatePerHour[hour] * lastCnt
-            }
-
-        }
-
-        avgDailyWalk = sumWalk / (cnt*60 + lastCnt)
-        avgDailyRun  = sumRun / (cnt*60 + lastCnt)
-        avgDailyMovement  = (sumWalk + sumRun) / (cnt*60 + lastCnt)
-        avgDailyHeartRate = sumHeartRate /(cnt*60 + lastCnt)
-
-
-    }
-
-    // 가장 많이 움직인 시각
-    // 가장 적게 움직인 시각
-    // 가장 높은 분당 심박수 시간당 심박수
-    // 가장 낮은 분당 심박수 시간당 심박수
-
-}
-
+val MATERIAL_COLORS = intArrayOf(
+    R.color.colorBlueGreen,
+    R.color.colorSkyBlue,
+    R.color.colorLiteSkyBlue,
+    R.color.colorBeige
+)
 
 class HomeActivity: AppCompatActivity() {
+    private var isRunning = false
+    private val showActivityThread = ShowMyDogActivity()
+
     private lateinit var user_id: String
     private lateinit var dog_list_json: String
     private lateinit var activity_today_json: String
@@ -139,12 +64,21 @@ class HomeActivity: AppCompatActivity() {
 
     private var analyzedActivityData = AnalyzedActivityData()
 
+    override fun onDestroy() {
+        super.onDestroy()
+        isRunning = false
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
+        isRunning = true
+
+
         setContentView(R.layout.home_layout)
         SetPieChart()
         SetBluetooth()
+        showActivityThread.start()
 
         var btnDogList: Button = findViewById(R.id.btn_dog_list)
 
@@ -173,8 +107,7 @@ class HomeActivity: AppCompatActivity() {
                     dog_index = 0 //TODO:로컬 데이터 읽어오기
 
 
-                    val thread = ShowMyDogActivity()
-                    thread.start()
+                    showActivityThread.interrupt()
 
                 }catch (e: JSONException) {
 
@@ -296,23 +229,6 @@ class HomeActivity: AppCompatActivity() {
     //==================================================
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun SumActivityData(datas: ArrayList<ActivityData>): ActivityData {
-        var sum: ActivityData = ActivityData("", "", LocalDate.now(), 0, 0, 0, 0, 0, 0, "", "", "")
-
-        for( d in datas) {
-
-            sum.ac_walk += d.ac_walk
-            sum.ac_run += d.ac_run
-            sum.ac_distance += d.ac_distance
-            /*
-              정보들 취합
-             */
-        }
-
-        return sum
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
     fun SetPieChart (){
         pieChart = findViewById(R.id.piechart) as PieChart
         pieChart!!.setUsePercentValues(false)
@@ -335,9 +251,6 @@ class HomeActivity: AppCompatActivity() {
         SetCombineChart()
 
     }
-
-
-
 
      fun SetCombineChart() {
 
@@ -378,27 +291,46 @@ class HomeActivity: AppCompatActivity() {
         xAxis.valueFormatter =
             IAxisValueFormatter { value, axis -> mQuarter[value.toInt() % mQuarter.size] }
 
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun DrawCombinedChart (){
         val data = CombinedData()
         data.setData(generateLineData())
         data.setData(generateBarData())
-        data.setData(generateBarData())
-        xAxis.axisMaximum = data.xMax + 0.25f
-         combinedChart!!.data = data
-         combinedChart!!.invalidate()
+
+        combinedChart!!.xAxis.axisMaximum = data.xMax + 0.25f
+        combinedChart!!.data = data
+        combinedChart!!.invalidate()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun generateLineData(): LineData? {
+        val date: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
         val d = LineData()
         val entries = ArrayList<Entry>()
-        for (index in 0 until mQuarter.size) {
-            entries.add(Entry(index.toFloat(), getRandom(15f, 5f)))
+
+        var value: Int= 0
+        for (index in 0..date.hour) {
+            value += analyzedActivityData.avgHeartRatePerHour[index]
+            if(index%3 == 2){
+                entries.add(Entry((index / 3).toFloat(), value.toFloat()))
+                value = 0
+            }
+            else if(index == date.hour){
+                entries.add(Entry((index / 3).toFloat(), value.toFloat()))
+                value = 0
+            }
         }
+
         val set = LineDataSet(entries, "Line DataSet")
         set.color = Color.rgb(0, 100, 0)
         set.lineWidth = 2.5f
         set.setCircleColor(Color.rgb(0, 100, 0))
         set.circleRadius = 5f
-        set.fillColor = Color.rgb(0, 100, 0)
+        set.fillColor = R.color.colorSkyBlue //Color.rgb(0, 100, 0)
         set.mode = LineDataSet.Mode.CUBIC_BEZIER
         set.setDrawValues(true)
         set.valueTextSize = 10f
@@ -408,12 +340,24 @@ class HomeActivity: AppCompatActivity() {
         return d
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun generateBarData(): BarData? {
+        val date: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         val entries = ArrayList<BarEntry>()
-        for (index in 0 until mQuarter.size) {
-            //var entry =
-            entries.add(BarEntry( index.toFloat() , getRandom(25f, 25f)))
-       }
+
+        var value: Int= 0
+        for (index in 0..date.hour) {
+            value += analyzedActivityData.movementPerHour[index]
+            if(index%3 == 2){
+                entries.add(BarEntry((index / 3).toFloat(), value.toFloat()))
+                value = 0
+            }
+            else if(index == date.hour){
+                entries.add(BarEntry((index / 3).toFloat(), value.toFloat()))
+                value = 0
+            }
+        }
+
         val set = BarDataSet(entries, "Bar DataSet")
         set.color = Color.rgb(60, 220, 78)
         set.valueTextColor = Color.rgb(60, 220, 78)
@@ -422,15 +366,9 @@ class HomeActivity: AppCompatActivity() {
         return BarData(set)
     }
 
-    private fun getRandom(range: Float, startsfrom: Float): Float {
-        return (Math.random() * range).toFloat() + startsfrom
-    }
 
 
-
-
-
-    fun AddPieChart(walk: Int, goal: Int){
+    fun DrawPieChart(walk: Int, goal: Int){
         val yValues = ArrayList<PieEntry>()
         yValues.add(PieEntry(walk.toFloat(), "Walk"))
 
@@ -440,18 +378,28 @@ class HomeActivity: AppCompatActivity() {
         val dataSet = PieDataSet(yValues, "Activity")
         dataSet.sliceSpace = 3f
         dataSet.selectionShift = 5f
+
+
         dataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
+
+
         val data = PieData(dataSet)
         data.setValueTextSize(10f)
         data.setValueTextColor(Color.YELLOW)
         pieChart!!.data = data
     }
 
-    inner class DrawPieChart : Thread() {
+    inner class DrawChart : Thread() {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun start() {
+            super.start()
+            DrawCombinedChart()
+            DrawPieChart(analyzedActivityData.allMovement, analyzedActivityData.goal)
+        }
         override fun run() {
-
             runOnUiThread {
                 pieChart!!.animateY(1000, Easing.EasingOption.EaseInOutCubic) //애니메이션
+                combinedChart!!.animateXY(1000, 1000)
             }
 
         }
@@ -461,36 +409,41 @@ class HomeActivity: AppCompatActivity() {
     inner class ShowMyDogActivity : Thread() {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            if(dog_index >= 0 && dog_index < dogDatas.size){
-                /* Get Today Activity Data */
+            while(isRunning){
+                try {
+                    var startTime = System.currentTimeMillis()
+                    if(dog_index >= 0 && dog_index < dogDatas.size){
+                        /* Get Today Activity Data */
+                        var data = ConnectToDB()
+                        data.dog_data = dogDatas[dog_index]
+                        data.type = DB_MODES.ACTODAY
 
-                var data = ConnectToDB()
-                data.dog_data = dogDatas[dog_index]
-                data.type = DB_MODES.ACTODAY
+                        activity_today_json = doWork(data)
 
-                activity_today_json = doWork(data)
+                        analyzedActivityData = AnalyzedActivityData()
+                        activity_data = ConvertJsonToActivityData(activity_today_json);
 
+                        analyzedActivityData.AnalyzeActivity(
+                            activity_data,
+                            data.dog_data.d_goal_activity
+                        )
 
+                        // 그래프로 활동 정보 표시
+                        val thread = DrawChart()
+                        thread.start()
+                    }
 
-                var walkCount : Int = 0
+                    var endTime = System.currentTimeMillis()
+                    var spentTime = endTime-startTime
 
-                if(activity_today_json != "false" && !activity_today_json.contains(("Error"))){
-                    activity_data = ConvertJsonToActivityData(activity_today_json);
-                    analyzedActivityData.AnalyzeActivity(activity_data)
-
-                    var todaySum = SumActivityData(activity_data)
-
-
-                    walkCount = todaySum.ac_walk + todaySum.ac_run
+                    sleep(60 * 1000 - (spentTime))
+                }
+                catch (e: InterruptedException){
+                    println("INTTERUPT")
                 }
 
-                // 그래프로 활동 정보 표시
-                val thread = DrawPieChart()
-                thread.start()
-                AddPieChart(walkCount, data.dog_data.d_goal_activity)
 
             }
-
         }
 
     }
@@ -503,16 +456,15 @@ class HomeActivity: AppCompatActivity() {
         Toast.makeText(this, "result: " + resultCode, Toast.LENGTH_SHORT).show()
         if(resultCode == HOME_RESULT.SELECT_DOG.idx || resultCode == HOME_RESULT.CANCLE_DOG.idx ) { // -1
             if(data != null){
+
                 if(resultCode == HOME_RESULT.SELECT_DOG.idx){
                     Toast.makeText(this, "INDEX : " + dog_index, Toast.LENGTH_SHORT).show()
+
                     dog_index = data.extras!!.getInt("dog_index")
 
                 }
-
                 dogDatas = data.getCharSequenceArrayListExtra("dog_list") as ArrayList<DogInfo>
-
-                val thread = ShowMyDogActivity()
-                thread.start()
+                showActivityThread.interrupt()
 
             }
         }

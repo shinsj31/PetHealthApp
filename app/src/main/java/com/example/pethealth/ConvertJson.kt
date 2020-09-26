@@ -50,10 +50,19 @@ public fun ConvertJsonToDogInfo (json :String, user_id : String ) : DogInfo? {
     return null
 }
 
-//TODO: CovertJson으로 이동
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun ConvertJsonToActivityData (_json: String ): ArrayList<ActivityData>{
+
+
     var _activity_datas = ArrayList<ActivityData>()
+
+    if(_json == "false" || _json.contains(("Error"))){
+
+        return _activity_datas
+    }
+
+
     var jarray = JSONArray(_json);   // JSONArray 생성
 
     for( i in 0..(jarray.length() - 1)) {
