@@ -52,6 +52,7 @@ public class AnalyzedActivityData {
 
     @RequiresApi(Build.VERSION_CODES.O)
     public fun AnalyzeActivity (datas : ArrayList<ActivityData> ){
+        println("!! AnalyzeActivity")
         for(data in datas){
             var recordTime =  data.ac_hour * 60 + data.ac_minute;
             println( "Record Time : " + recordTime);
@@ -136,6 +137,7 @@ class HomeActivity: AppCompatActivity() {
         "0", "3", "6", "9", "12", "15", "18", "21"
     )
 
+    private var analyzedActivityData = AnalyzedActivityData()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?){
@@ -169,6 +171,8 @@ class HomeActivity: AppCompatActivity() {
 
                     dogDatas = ConvertJsonToDogInfos(dog_list_json, user_id)
                     dog_index = 0 //TODO:로컬 데이터 읽어오기
+
+
                     val thread = ShowMyDogActivity()
                     thread.start()
 
@@ -308,6 +312,7 @@ class HomeActivity: AppCompatActivity() {
         return sum
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun SetPieChart (){
         pieChart = findViewById(R.id.piechart) as PieChart
         pieChart!!.setUsePercentValues(false)
@@ -325,6 +330,8 @@ class HomeActivity: AppCompatActivity() {
         pieChart!!.description = description
 
         combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+
+
         SetCombineChart()
 
     }
@@ -463,10 +470,14 @@ class HomeActivity: AppCompatActivity() {
 
                 activity_today_json = doWork(data)
 
+
+
                 var walkCount : Int = 0
 
                 if(activity_today_json != "false" && !activity_today_json.contains(("Error"))){
                     activity_data = ConvertJsonToActivityData(activity_today_json);
+                    analyzedActivityData.AnalyzeActivity(activity_data)
+
                     var todaySum = SumActivityData(activity_data)
 
 
