@@ -5,10 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import kotlinx.android.synthetic.main.main_drawer_layout.*
@@ -41,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         // Get Button & set click listener
         var btnLogin: Button = findViewById(R.id.btn_login)
-        var btnJoin: Button = findViewById(R.id.btn_join)
+        var btnJoin: TextView = findViewById(R.id.btn_join)
 
 
         btnLogin.setOnClickListener {
