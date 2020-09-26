@@ -1,10 +1,13 @@
 package com.example.pethealth
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -18,13 +21,19 @@ import java.util.logging.Handler
 class MainActivity : AppCompatActivity() {
     private lateinit var etID: EditText
     private lateinit var etPW: EditText
-
+    private lateinit var imgLOGIN: ImageView
     private lateinit var mHandler: Handler
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
+
+        var option: BitmapFactory.Options = BitmapFactory.Options()
+        option.inSampleSize = 2
+        var bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.back_img_lite, option)
+        imgLOGIN = findViewById(R.id.back_img)
+        imgLOGIN.setImageBitmap(bitmap)
   
         // Get TextViews by Id
         etID = findViewById(R.id.et_id)
@@ -33,33 +42,6 @@ class MainActivity : AppCompatActivity() {
         // Get Button & set click listener
         var btnLogin: Button = findViewById(R.id.btn_login)
         var btnJoin: Button = findViewById(R.id.btn_join)
-
-
-        var btnConnectBluetooth: Button = findViewById(R.id.btn_connect_bluetooth)
-        btnConnectBluetooth.setOnClickListener {
-
-            //btService.enableBluetooth();
-            val intent = Intent(this@MainActivity, BluetoothService::class.java)
-
-            //intent.putExtra("user_id", id)
-            startActivityForResult(intent, 1)
-
-        }
-        // BLUETOOTH -------------------------------------------
-
-
-        var btnChart: Button = findViewById(R.id.btn_chart)
-
-        btnChart.setOnClickListener {
-
-            //btService.enableBluetooth();
-            val intent = Intent(this@MainActivity, ChartActivity::class.java)
-
-            //intent.putExtra("user_id", id)
-            startActivityForResult(intent, 1)
-
-        }
-
 
 
         btnLogin.setOnClickListener {
@@ -110,12 +92,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, "Change Server Address!", Toast.LENGTH_SHORT).show()
             ChangeServerIP()
         }
-        var btnTest: Button = findViewById(R.id.btn_test)
-        btnTest.setOnClickListener {
-            //StopBluetoothService()
-
-        }
-
         /*
         // Set Toolbar on main activity
         setSupportActionBar(main_layout_toolbar)
