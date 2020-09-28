@@ -43,6 +43,7 @@
         <activity android:name=".NewDogActivity" />
         <activity android:name=".BluetoothService" />
         <activity android:name=".ChartActivity" />
+        <activity android:name=".MovementCountActivity" />
     </application>
 
 </manifest>

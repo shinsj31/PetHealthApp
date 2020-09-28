@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Button" />
+        android:text="Button"
+        />
 
     <Button
         android:id="@+id/btn_dog_modify"
@@ -21,5 +22,12 @@
         android:layout_weight="0.1"
         android:text="수정"
          />
+    <Button
+        android:id="@+id/btn_dog_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:text="제거"
+        />
 
 </LinearLayout>

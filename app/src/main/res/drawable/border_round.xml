@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:width="0.5dp"
 
-</selector>
+    />
+    <!--android:color="@color/colorRed" -->
+    <corners android:radius="5dp"/> <!-- 모서리 기울기 -->
+
+    <!-- <solid android:color="@color/colorYellow"/>   --> <!-- 배경색 -->
+    <padding
+        android:bottom="8dp"
+        android:left="8dp"
+        android:right="6dp"
+        android:top="8dp"
+        />
+</shape>
+
+<!-- https://iholasoft.tistory.com/5 -->

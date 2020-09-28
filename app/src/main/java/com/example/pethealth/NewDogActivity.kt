@@ -41,8 +41,6 @@ class NewDogActivity: AppCompatActivity() {
         val intent: Intent = getIntent()
 
         setResult(Activity.RESULT_CANCELED, intent)
-        var user_id = intent.getStringExtra("user_id")!!
-
         et_dname.setText(intent.getStringExtra("dname"))
         et_dbreed.setText(intent.getStringExtra("dbreed"))
         et_dheight.setText(intent.getStringExtra("dheight"))
@@ -68,7 +66,7 @@ class NewDogActivity: AppCompatActivity() {
             edit_text_en(false)
 
             var data = ConnectToDB()
-            var login_info = LoginData(user_id, "")
+            var login_info = LoginData( HomeActivity.user_id, "")
             if(d_id == "")
                 data.type = DB_MODES.DADD
             else

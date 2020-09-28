@@ -2,7 +2,6 @@ package com.example.pethealth
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -24,8 +23,10 @@ public class AnalyzedActivityData {
     public var avgDailyMovement: Int = 0  // 평균 움직임
     public var avgDailyHeartRate: Int = 0  // 평균 심박수
     public var goal : Int = 0
+    public var movementTime: Int = 0  // 움직인 시간
 
-
+    public var dailyRestTime : Int =0
+    public var dailySleepTime : Int =0
 
     @RequiresApi(Build.VERSION_CODES.O)
     public fun AnalyzeActivity (datas : ArrayList<ActivityData> ,  goal : Int ){
@@ -63,8 +64,19 @@ public class AnalyzedActivityData {
             for(minute in   0..min ){
                 var recordTime = hour * 60 + minute
 
+                if(recordedWalk[recordTime] != 0 || recordedRun[recordTime] != 0)
+                     movementTime++;
+                 else
+                 {
+                    if(recordedHeartRate[recordTime] > 65){
+                        dailyRestTime++;
+                    }
+                     else {
+                        dailySleepTime++;
+                    }
+                 }
 
-                sumWalk +=  recordedWalk[recordTime]
+                sumWalk += recordedWalk[recordTime]
                 sumRun +=  recordedRun[recordTime]
                 sumHeartRate +=  recordedHeartRate[recordTime]
 
@@ -72,7 +84,7 @@ public class AnalyzedActivityData {
             walkPerHour[hour] = sumWalk
             runPerHour[hour] = sumRun
             movementPerHour[hour] = (sumWalk + sumRun)
-
+            min += 1
             avgWalkPerHour[hour] = sumWalk / min
             avgRunPerHour[hour] = sumRun / min
             avgMovementPerHour[hour] = (sumWalk + sumRun) / min
@@ -82,7 +94,7 @@ public class AnalyzedActivityData {
 
 
 
-
+        var min = date.minute + 1
 
         sumWalk = 0
         sumRun = 0
@@ -95,15 +107,15 @@ public class AnalyzedActivityData {
                 sumHeartRate +=  avgHeartRatePerHour[hour] * 60
             }
             else {
-                sumHeartRate +=  avgHeartRatePerHour[hour] * date.minute
+                sumHeartRate +=  avgHeartRatePerHour[hour] * min
             }
 
         }
 
-        avgDailyWalk = sumWalk / ((date.hour - 1)*60 + date.minute)
-        avgDailyRun  = sumRun / ((date.hour - 1)*60 + date.minute)
-        avgDailyMovement  = (sumWalk + sumRun) / ((date.hour - 1)*60 + date.minute)
-        avgDailyHeartRate = sumHeartRate /((date.hour - 1)*60 + date.minute)
+        avgDailyWalk = sumWalk / ((date.hour - 1)*60 + min)
+        avgDailyRun  = sumRun / ((date.hour - 1)*60 + min)
+        avgDailyMovement  = (sumWalk + sumRun) / ((date.hour - 1)*60 + min)
+        avgDailyHeartRate = sumHeartRate /((date.hour - 1)*60 + min)
 
 
 

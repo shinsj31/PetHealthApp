@@ -174,5 +174,6 @@ class ConnectToDB {
     lateinit var user_data:UserInfo
     lateinit var dog_data:DogInfo
     lateinit var date_data:DateData
-
 }
+
+

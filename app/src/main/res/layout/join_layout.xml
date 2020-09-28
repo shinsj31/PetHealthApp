@@ -8,153 +8,101 @@
     android:paddingRight="40dp">
 
     <TextView
+        android:id="@+id/tv_createAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="회원가입"
+        android:text="Create Account"
         android:textSize="30dp"
-        android:textStyle="bold"
+        android:textColor="@color/colorBlueGreen"
+        android:fontFamily="@font/tmoneyroundwindextrabold"
+        android:layout_gravity="center" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/tmoneyroundwindregular"
         android:layout_gravity="center"
-        android:layout_marginBottom="40dp" />
-
-    <!-- partition line -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorLightGray"
-        android:layout_marginBottom="30dp"/>
+        android:text="Create a new account"
+        android:layout_marginBottom="50dp"/>
 
     <!-- Name layout -->
-    <LinearLayout
-        android:id="@+id/linear_join_name"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="10dp">
         <EditText
             android:id="@+id/et_join_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:hint="Name"
             android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- ID layout -->
-    <LinearLayout
-        android:id="@+id/linear_join_id"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ID"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="10dp">
         <EditText
             android:id="@+id/et_join_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:hint="ID"
             android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- PW layout -->
-    <LinearLayout
-        android:id="@+id/linear_join_pw"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PW"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="10dp">
         <EditText
             android:id="@+id/et_join_pw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="textPassword"/>
-    </LinearLayout>
+            android:hint="PW"
+            android:background="@drawable/round_border_thin"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- E-mail layout -->
-    <LinearLayout
-        android:id="@+id/linear_join_mail"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="E-mail"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="10dp">
         <EditText
             android:id="@+id/et_join_mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:hint="E-mail"
             android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/linear_join_phone"
+
+    <!-- Phone layout -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="10dp">
         <EditText
             android:id="@+id/et_join_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="numberDecimal"/>
-    </LinearLayout>
+            android:hint="Phone"
+            android:background="@drawable/round_border_thin"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Join -->
     <Button
         android:id="@+id/btn_join"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Join"
+        android:text="Create account"
         android:layout_marginTop="50dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:background="@color/colorBlueGreen"
+        android:textColor="#ffffff"/>
 </LinearLayout>

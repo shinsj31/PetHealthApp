@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_menu_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
 
     <!-- Tool Bar -->
@@ -30,47 +33,293 @@
             android:id="@+id/btnConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="연결"
-            />
+            android:text="연결" />
 
         <Button
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="보내기"
-            />
+            android:text="보내기" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_name"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="이름"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@color/colorBlueGreen"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/piechart"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_gravity="center">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        </com.github.mikephil.charting.charts.PieChart>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-        <com.github.mikephil.charting.charts.CombinedChart
-            android:id="@+id/combinedChart"
-            android:layout_width="250dp"
-            android:layout_height="125dp"
-            android:layout_gravity="center">
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/piechart"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
 
-        </com.github.mikephil.charting.charts.CombinedChart>
+                </com.github.mikephil.charting.charts.PieChart>
+
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/combinedChart"
+                    android:layout_width="250dp"
+                    android:layout_height="125dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
+
+                </com.github.mikephil.charting.charts.CombinedChart>
+
+                <LinearLayout
+                    android:id="@+id/layout_activity_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+
+
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_border_home"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textColor="@color/colorBlueGreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="활동시간"
+                        tools:ignore="MissingConstraints" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_movement_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="60분"
+                            tools:ignore="MissingConstraints"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <Space
+                            android:layout_width="152dp"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/txt_movement_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="10.0 km"
+                            tools:ignore="MissingConstraints"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_rest_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:layout_margin="5dp"
+
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_border_home"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="휴식 시간"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="자는 시간"
+                            android:textColor="@color/colorBlueGreen"/>
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_rest_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="30분"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <TextView
+                            android:id="@+id/txt_sleep_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="60분"
+                            android:textColor="@color/colorBlueGreen"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_heart_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:layout_margin="5dp"
+
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_border_home"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="심박수/스트레스"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="@color/colorBlueGreen"/>
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_heart_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="30 bpm"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="@color/colorBlueGreen"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_border_home"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="체중"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=" " />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_weight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="3.0 kg"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                        <Button
+                            android:id="@+id/btn_input_weight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Button"
+                            android:textColor="@color/colorBlueGreen"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
     </LinearLayout>
 
 

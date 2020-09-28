@@ -20,13 +20,13 @@ class DogListActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dog_list_layout)
 
-        user_id = intent.getStringExtra("user_id")!!
-        dogDatas = intent.getCharSequenceArrayListExtra("dog_list") as ArrayList<DogInfo>
+        user_id = HomeActivity.user_id
+        dogDatas =  HomeActivity.dogDatas //intent.getCharSequenceArrayListExtra("dog_list") as ArrayList<DogInfo>
 
 
         dog_lv = findViewById(R.id.lv_dog)
 
-        doglist_adapter = DoglistAdapter(applicationContext, dogDatas, this, user_id)
+        doglist_adapter = DoglistAdapter(applicationContext, dogDatas, this)
         dog_lv.adapter = doglist_adapter
 
         var btnNewDog:Button = findViewById(R.id.btn_new_dog)
@@ -37,24 +37,12 @@ class DogListActivity: AppCompatActivity(){
                     //Toast.makeText(this@DogListActivity, "NEW DOG", Toast.LENGTH_SHORT).show()
 
                     val intent = Intent(this@DogListActivity, NewDogActivity::class.java)
-                    intent.putExtra("user_id", user_id)
                     intent.putExtra("d_id", "")
                     startActivityForResult(intent, 1)
                 }
 
             }
         }
-    }
-
-    override fun onBackPressed() {
-        // 뒤로가기 시 super.onBackPressed() 는 실행하지 않게함 (// Activity.cancle 로 적용되 Intent를 보낼 수 없음)
-        val intent = Intent(this@DogListActivity, HomeActivity::class.java)
-        //intent.putExtra("dog_index", index) // 송신
-        intent.putExtra("dog_list", dogDatas)
-        requestedOrientation = HOME_RESULT.CANCLE_DOG.idx
-        setResult(HOME_RESULT.CANCLE_DOG.idx, intent)
-        finish()
-
     }
 
 
@@ -71,11 +59,7 @@ class DogListActivity: AppCompatActivity(){
                         dogDatas.add(doginfo)
 
                         doglist_adapter = DoglistAdapter(
-                            applicationContext,
-                            dogDatas,
-                            this,
-                            user_id
-                        )
+                            applicationContext,dogDatas, this  )
                         dog_lv.adapter = doglist_adapter
                     }
                 }
@@ -93,8 +77,8 @@ class DogListActivity: AppCompatActivity(){
                                 doglist_adapter = DoglistAdapter(
                                     applicationContext,
                                     dogDatas,
-                                    this,
-                                    user_id
+                                    this
+
                                 )
                                 dog_lv.adapter = doglist_adapter
 

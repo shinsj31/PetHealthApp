@@ -1,6 +1,7 @@
 package com.example.pethealth
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -21,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imgLOGIN: ImageView
     private lateinit var mHandler: Handler
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
@@ -31,7 +31,15 @@ class MainActivity : AppCompatActivity() {
         var bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.back_img_lite, option)
         imgLOGIN = findViewById(R.id.back_img)
         imgLOGIN.setImageBitmap(bitmap)
-  
+
+        var pref: SharedPreferences = getSharedPreferences("auto_login", MODE_PRIVATE)
+        if(!pref.getString("auto_id", "").equals("")) {
+            val intent = Intent(this@MainActivity, HomeActivity::class.java)
+            var id: String? = pref.getString("auto_id", "")
+            var pw: String? = pref.getString("auto_pw", "")
+            intent.putExtra("user_id", id)
+            startActivityForResult(intent, 1)
+        }
         // Get TextViews by Id
         etID = findViewById(R.id.et_id)
         etPW = findViewById(R.id.et_pw)
@@ -61,6 +69,10 @@ class MainActivity : AppCompatActivity() {
                         etPW.isEnabled = true
                     }
 
+                    var edit: SharedPreferences.Editor = pref.edit()
+                    edit.putString("auto_id", id)
+                    edit.putString("auto_pw", pw)
+                    edit.commit()
                     val intent = Intent(this@MainActivity, HomeActivity::class.java)
 
                     intent.putExtra("user_id", id)

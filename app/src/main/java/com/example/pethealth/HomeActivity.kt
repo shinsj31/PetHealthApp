@@ -1,11 +1,14 @@
 package com.example.pethealth
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +25,8 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +36,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 enum class HOME_RESULT(var idx: Int) {
-    SELECT_DOG(10), NEW_DOG(11) , MODI_DOG(12) , CANCLE_DOG(13)
+    SELECT_DOG(10), NEW_DOG(11) , MODI_DOG(12)
 }
 
 val MATERIAL_COLORS = intArrayOf(
@@ -42,19 +46,49 @@ val MATERIAL_COLORS = intArrayOf(
     R.color.colorBeige
 )
 
-class HomeActivity: AppCompatActivity() {
+public class HomeActivity: AppCompatActivity() {
+    companion object {
+        lateinit var prefs: PreferenceUtil
+        public var dog_index = -1 // save local
+
+        @JvmStatic
+        fun SetDogIndex(_index: Int) {
+            dog_index = _index
+            prefs.setString("dog_index",_index.toString())
+        }
+
+        lateinit var user_id: String
+        lateinit var dog_list_json: String
+        lateinit var activity_today_json: String
+        var dogDatas = ArrayList<DogInfo>()
+        var activity_data = ArrayList<ActivityData>()
+
+        var analyzedActivityData = AnalyzedActivityData()
+    }
+
+
     private var isRunning = false
     private val showActivityThread = ShowMyDogActivity()
 
-    private lateinit var user_id: String
-    private lateinit var dog_list_json: String
-    private lateinit var activity_today_json: String
-    private var dogDatas = ArrayList<DogInfo>()
-    private var activity_data = ArrayList<ActivityData>()
-    private var dog_index = -1 // save local
-
     private var pieChart: PieChart? = null
     private var combinedChart: CombinedChart? = null
+
+
+    private lateinit var txt_name :TextView
+    private lateinit var btnDogList: Button
+    private lateinit var layout_activity_info :ViewGroup
+    private lateinit var layout_rest : ViewGroup
+    private lateinit var layout_heart_rate : ViewGroup
+    private lateinit var layout_weight : ViewGroup
+
+    private lateinit var txt_movement_time :TextView
+    private lateinit var txt_movement_distance :TextView
+    private lateinit var txt_rest_time :TextView
+    private lateinit var txt_sleep_time :TextView
+    private lateinit var txt_heart_rate :TextView
+    private lateinit var txt_weight :TextView
+    private lateinit var btn_input_weight : Button
+
 
     private var bluetoothAddress: String = "24:6F:28:9D:47:76"
 
@@ -62,29 +96,47 @@ class HomeActivity: AppCompatActivity() {
         "0", "3", "6", "9", "12", "15", "18", "21"
     )
 
-    private var analyzedActivityData = AnalyzedActivityData()
 
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
     }
 
+    @SuppressLint("WrongViewCast")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        isRunning = true
+
 
 
         setContentView(R.layout.home_layout)
+
+        txt_name = findViewById(R.id.txt_name)
+        btnDogList = findViewById(R.id.btn_dog_list)
+        layout_activity_info =findViewById(R.id.layout_activity_time) // 활동 정보 요약
+        layout_rest =findViewById(R.id.layout_rest_time) // 휴식 정보
+        layout_heart_rate =findViewById(R.id.layout_heart_rate) // 심박수 정보
+        layout_weight =findViewById(R.id.layout_weight) // 몸무게 정보
+
+        txt_movement_time =findViewById(R.id.txt_movement_time)
+        txt_movement_distance =findViewById(R.id.txt_movement_distance)
+        txt_rest_time =findViewById(R.id.txt_rest_time)
+        txt_sleep_time =findViewById(R.id.txt_sleep_time)
+        txt_heart_rate =findViewById(R.id.txt_heart_rate)
+        txt_weight =findViewById(R.id.txt_weight)
+        btn_input_weight =findViewById(R.id.btn_input_weight) // 몸무게 정보 입력
+
         SetPieChart()
+        SetCombineChart()
+
         SetBluetooth()
-        showActivityThread.start()
 
-        var btnDogList: Button = findViewById(R.id.btn_dog_list)
+        prefs = PreferenceUtil(applicationContext) // preference !!
 
-        // 저장된 강아지 정보가 없다면 강아지 추가하기
-        // 강아지 정보 변경 및 추가하기
-        // 멤버 변경하기
+        isRunning = true
+        showActivityThread.start() // thread run animation of chart
+
+
         user_id = intent.getStringExtra("user_id")!!
 
         var data = ConnectToDB()
@@ -102,15 +154,12 @@ class HomeActivity: AppCompatActivity() {
             else {
 
                 try {
-
                     dogDatas = ConvertJsonToDogInfos(dog_list_json, user_id)
-                    dog_index = 0 //TODO:로컬 데이터 읽어오기
-
+                    dog_index = prefs.getString("dog_index","0").toInt() //로컬 데이터 읽어옴
 
                     showActivityThread.interrupt()
 
                 }catch (e: JSONException) {
-
                     e.printStackTrace();
                 }
             }
@@ -122,8 +171,6 @@ class HomeActivity: AppCompatActivity() {
                 CoroutineScope(Dispatchers.Main).launch {
                     job_get_dog_list.join()
                     val intent: Intent = Intent(this@HomeActivity, DogListActivity::class.java)
-                    intent.putExtra("user_id", user_id)
-                    intent.putExtra("dog_list", dogDatas)
                     startActivityForResult(intent, 1)
                 }
 
@@ -135,8 +182,44 @@ class HomeActivity: AppCompatActivity() {
                 true
             }
         }
+        
+        
+        layout_activity_info.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+             //활동 정보 요약을 클릭 시 상세한 정보를 볼 수 있다.
+            }
 
+        }
+        layout_rest.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
 
+            }
+
+        }
+
+        layout_heart_rate.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(this@HomeActivity, "click layout_heart_rate"  , Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
+
+        layout_weight.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(this@HomeActivity, "click layout_weight"  , Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
+
+        btn_input_weight.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(this@HomeActivity, "click btn_input_weight" , Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
     }
 
     // =======================================
@@ -156,10 +239,6 @@ class HomeActivity: AppCompatActivity() {
             //finish()
             return
         }
-
-
-
-
 
         // --------------------------------------- 데이터 수신 시 --------------------------------------- //
         bt!!.setOnDataReceivedListener { data, message ->
@@ -232,7 +311,7 @@ class HomeActivity: AppCompatActivity() {
     fun SetPieChart (){
         pieChart = findViewById(R.id.piechart) as PieChart
         pieChart!!.setUsePercentValues(false)
-        pieChart!!.description.isEnabled = false
+        pieChart!!.description.isEnabled = true
         pieChart!!.setExtraOffsets(5f, 10f, 5f, 5f)
         pieChart!!.dragDecelerationFrictionCoef = 0.95f
         pieChart!!.isDrawHoleEnabled = true
@@ -245,16 +324,42 @@ class HomeActivity: AppCompatActivity() {
         description.setTextSize(15f)
         pieChart!!.description = description
 
-        combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+        // 차트 클릭 시
+        pieChart!!.setOnChartValueSelectedListener(
+            //https://stackoverflow.com/questions/35268971/mpandroidchart-click-listener-on-chart 
+            object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+                }
+
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+
+                    val intent: Intent = Intent(this@HomeActivity, MovementCountActivity::class.java)
+                    startActivityForResult(intent, 1)
+
+                }
+            }
+        )
 
 
-        SetCombineChart()
+
+
+
+
 
     }
 
      fun SetCombineChart() {
 
-        combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+         combinedChart = findViewById(R.id.combinedChart) as CombinedChart
+
+         combinedChart!!.setOnChartValueSelectedListener(  object : OnChartValueSelectedListener {
+             override fun onNothingSelected() {
+             }
+             override fun onValueSelected(e: Entry?, h: Highlight?) {
+             }
+
+         })
+
         combinedChart!!.description.isEnabled = false
         combinedChart!!.setBackgroundColor(Color.WHITE)
         combinedChart!!.setDrawGridBackground(false)
@@ -267,7 +372,12 @@ class HomeActivity: AppCompatActivity() {
             CombinedChart.DrawOrder.LINE,
             CombinedChart.DrawOrder.SCATTER
         )
-        val l = combinedChart!!.legend
+
+
+         combinedChart!!.setScaleEnabled(false) // 확대 막기
+
+
+         val l = combinedChart!!.legend
         l.isWordWrapEnabled = true
         l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
@@ -283,6 +393,7 @@ class HomeActivity: AppCompatActivity() {
         leftAxis.setDrawGridLines(false)
         leftAxis.granularity = 10f // 한칸의 크기
         leftAxis.axisMinimum = 0f
+
         val xAxis = combinedChart!!.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTH_SIDED
         xAxis.axisMinimum = 0f
@@ -326,15 +437,15 @@ class HomeActivity: AppCompatActivity() {
         }
 
         val set = LineDataSet(entries, "Line DataSet")
-        set.color = Color.rgb(0, 100, 0)
+        set.color = Color.rgb(145, 224, 244)
         set.lineWidth = 2.5f
-        set.setCircleColor(Color.rgb(0, 100, 0))
+        set.setCircleColor(Color.rgb(145, 224, 244))
         set.circleRadius = 5f
-        set.fillColor = R.color.colorSkyBlue //Color.rgb(0, 100, 0)
+        set.fillColor = Color.rgb(145, 224, 244)//Color.rgb(0, 100, 0)
         set.mode = LineDataSet.Mode.CUBIC_BEZIER
         set.setDrawValues(true)
         set.valueTextSize = 10f
-        set.valueTextColor = Color.rgb(0, 100, 0)
+        set.valueTextColor = Color.rgb(145, 224, 244)
         set.axisDependency = YAxis.AxisDependency.LEFT
         d.addDataSet(set)
         return d
@@ -359,8 +470,8 @@ class HomeActivity: AppCompatActivity() {
         }
 
         val set = BarDataSet(entries, "Bar DataSet")
-        set.color = Color.rgb(60, 220, 78)
-        set.valueTextColor = Color.rgb(60, 220, 78)
+        set.color = R.color.colorBlueGreen
+        set.valueTextColor = R.color.colorBlueGreen
         set.valueTextSize = 10f
         set.axisDependency = YAxis.AxisDependency.RIGHT
         return BarData(set)
@@ -380,8 +491,11 @@ class HomeActivity: AppCompatActivity() {
         dataSet.selectionShift = 5f
 
 
-        dataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
+      //  dataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
+        dataSet.addColor(Color.rgb(145, 224, 244))
+        dataSet.addColor(Color.rgb(0, 224, 244))
 
+        pieChart!!.centerText = walk.toString() + "/" + goal.toString()
 
         val data = PieData(dataSet)
         data.setValueTextSize(10f)
@@ -410,9 +524,13 @@ class HomeActivity: AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
             while(isRunning){
-                try {
+
+                    try {
                     var startTime = System.currentTimeMillis()
                     if(dog_index >= 0 && dog_index < dogDatas.size){
+
+
+
                         /* Get Today Activity Data */
                         var data = ConnectToDB()
                         data.dog_data = dogDatas[dog_index]
@@ -431,6 +549,16 @@ class HomeActivity: AppCompatActivity() {
                         // 그래프로 활동 정보 표시
                         val thread = DrawChart()
                         thread.start()
+
+                        runOnUiThread {
+                            txt_name.text = dogDatas[dog_index].d_name
+                            txt_weight.text = dogDatas[dog_index].d_weight
+                            txt_heart_rate.text = analyzedActivityData.avgDailyHeartRate.toString() + " bpm"
+                            txt_rest_time.text = analyzedActivityData.dailyRestTime.toString() + " 분"
+                            txt_sleep_time.text = analyzedActivityData.dailySleepTime.toString() + " 분"
+                            txt_movement_time.text = analyzedActivityData.movementTime.toString() + " 분"
+                            txt_movement_distance.text = "0.0 km"
+                        }
                     }
 
                     var endTime = System.currentTimeMillis()
@@ -439,13 +567,10 @@ class HomeActivity: AppCompatActivity() {
                     sleep(60 * 1000 - (spentTime))
                 }
                 catch (e: InterruptedException){
-                    println("INTTERUPT")
+                    println("INTERRUPT " + e) // interrupt 발생 시 강제로 sleep 을 깨울 수 있음
                 }
-
-
             }
         }
-
     }
 
 
@@ -454,19 +579,9 @@ class HomeActivity: AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Toast.makeText(this, "result: " + resultCode, Toast.LENGTH_SHORT).show()
-        if(resultCode == HOME_RESULT.SELECT_DOG.idx || resultCode == HOME_RESULT.CANCLE_DOG.idx ) { // -1
-            if(data != null){
+        if(resultCode == HOME_RESULT.SELECT_DOG.idx  ) { // -1
 
-                if(resultCode == HOME_RESULT.SELECT_DOG.idx){
-                    Toast.makeText(this, "INDEX : " + dog_index, Toast.LENGTH_SHORT).show()
-
-                    dog_index = data.extras!!.getInt("dog_index")
-
-                }
-                dogDatas = data.getCharSequenceArrayListExtra("dog_list") as ArrayList<DogInfo>
-                showActivityThread.interrupt()
-
-            }
+            showActivityThread.interrupt()
         }
 
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
@@ -488,10 +603,5 @@ class HomeActivity: AppCompatActivity() {
             }
         }
     }
-
-
-
-
-
 
 }
