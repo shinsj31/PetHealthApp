@@ -24,102 +24,135 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class MovementCountActivity: AppCompatActivity(){
-
+class RestActivity: AppCompatActivity(){
 
     private var daily_barChart:  BarChart? = null
     private var today_barChart:  BarChart? = null
 
-
     private lateinit var date : LocalDate
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.movement_count_layout)
+        setContentView(R.layout.rest_layout)
 
         date = LocalDate.now()
-        daily_barChart = findViewById(R.id.daily_movement_chart) as BarChart
-        today_barChart = findViewById(R.id.today_movement_chart) as BarChart
+        daily_barChart = findViewById(R.id.daily_rest_chart) as BarChart
+        today_barChart = findViewById(R.id.today_rest_chart) as BarChart
 
 
         InitChart(daily_barChart!!)
         InitChart(today_barChart!!)
 
         DrawAllDateChart()
-        DrawTodayChart(LocalDate.now())
+        DrawTodayChart(date)
 
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun DrawAllDateChart (){
-        val entries: ArrayList<BarEntry> = ArrayList()
+        val entries1: ArrayList<BarEntry> = ArrayList()
+        val entries2: ArrayList<BarEntry> = ArrayList()
         var valList = HomeActivity.result_activitys
         val labelList: ArrayList<String> = ArrayList()
         val dates: ArrayList<LocalDate> = ArrayList()
         var cnt =0
 
-        var colors : ArrayList<Int> = ArrayList()
-
+        var colors1 : ArrayList<Int> = ArrayList()
+        var colors2 : ArrayList<Int> = ArrayList()
 
         for (i in 0..valList.size-1) {
             if(valList[i].dog_id == HomeActivity.dogDatas[HomeActivity.dog_index].d_id.toInt()){
-                entries.add(BarEntry(cnt++.toFloat(), valList[i].allMovement.toFloat()))
+                entries1.add(BarEntry(cnt.toFloat() - 0.15f, valList[i].dailyRestTime.toFloat()))
+                entries2.add(BarEntry(cnt.toFloat() + 0.15f, valList[i].dailySleepTime.toFloat()))
+                cnt++
                 labelList.add(
                     valList[i].ac_date.format(DateTimeFormatter.ofPattern("MM-dd")).toString()
                 )
                 dates.add(valList[i].ac_date)
 
-                if(HomeActivity.dogDatas[HomeActivity.dog_index].d_goal_activity < valList[i].allMovement ) {
-                    colors.add(Color.rgb(0x0C, 0x90, 0xAD))
+                if( 1500 < valList[i].dailyRestTime   ) {
+                    colors1.add(Color.rgb(0x0C, 0x90, 0xAD))
                 }else{
                     // 0C90AD
-
-                    colors.add(Color.rgb(145, 224, 244))
-
+                    colors1.add(Color.rgb(145, 224, 244))
+                }
+                if( 1500 < valList[i].dailySleepTime   ) {
+                    colors2.add(Color.rgb(0x0C, 0x90, 0xAD))
+                }else{
+                    // 0C90AD
+                    colors2.add(Color.rgb(145, 224, 244))
                 }
             }
         }
 
-        entries.add(
+
+
+        entries1.add(
             BarEntry(
-                valList.size.toFloat(),
-                HomeActivity.analyzedActivityData.allMovement.toFloat()
+                valList.size.toFloat() - 0.15f,
+                HomeActivity.analyzedActivityData.dailyRestTime.toFloat()
             )
         )
-        if(HomeActivity.dogDatas[HomeActivity.dog_index].d_goal_activity < HomeActivity.analyzedActivityData.allMovement ) {
-            colors.add(Color.rgb(0x0C, 0x90, 0xAD))
+        entries2.add(
+            BarEntry(
+                valList.size.toFloat() + 0.15f,
+                HomeActivity.analyzedActivityData.dailySleepTime.toFloat()
+            )
+        )
+
+        if(1500 < HomeActivity.analyzedActivityData.dailyRestTime ) {
+            colors1.add(Color.rgb(0x0C, 0x90, 0xAD))
 
         }else{
-            colors.add(Color.rgb(145, 224, 244))
+            colors1.add(Color.rgb(145, 224, 244))
         }
+        if(1500 < HomeActivity.analyzedActivityData.dailySleepTime ) {
+            colors2.add(Color.rgb(0x0C, 0x90, 0xAD))
+
+        }else{
+            colors2.add(Color.rgb(145, 224, 244))
+        }
+
+
         labelList.add(LocalDate.now().format(DateTimeFormatter.ofPattern("MM-dd")).toString())
         dates.add(LocalDate.now())
-        var fillCnt =   (5 - entries.count() % 5)%5
+        var fillCnt = (5 - entries1.count() % 5)%5
         for(i in 1..fillCnt){
-            entries.add(
+            entries1.add(
                 BarEntry(
-                    entries.count().toFloat() ,
+                    entries1.count().toFloat(),
+                    0f
+                )
+            )
+            entries2.add(
+                BarEntry(
+                    entries2.count().toFloat(),
                     0f
                 )
             )
             labelList.add("")
-            colors.add(Color.rgb(0, 0, 0))
+            colors1.add(Color.rgb(0, 0, 0))
+            colors2.add(Color.rgb(0, 0, 0))
         }
 
 
 
+        val set1 = BarDataSet(entries1, "평균 심박수")
+        set1.setColors(colors1)
+        set1.valueTextColor = R.color.colorBlueGreen
+        set1.valueTextSize = 10f
+        set1.axisDependency = YAxis.AxisDependency.RIGHT
+        val set2 = BarDataSet(entries2, "평균 심박수")
+        set2.setColors(colors2)
+        set2.valueTextColor = R.color.colorBlueGreen
+        set2.valueTextSize = 10f
+        set2.axisDependency = YAxis.AxisDependency.RIGHT
 
-        val set = BarDataSet(entries, "걸음수")
-        set.setColors(colors)
-        //set.color = R.color.colorBlueGreen
-        set.valueTextColor = R.color.colorBlueGreen
-        set.valueTextSize = 10f
-        set.axisDependency = YAxis.AxisDependency.RIGHT
-
-        val data = BarData(set)
+        val data = BarData()
+        data.addDataSet(set1)
+        data.addDataSet(set2)
         data.barWidth = 0.1f;
 
 
@@ -135,7 +168,9 @@ class MovementCountActivity: AppCompatActivity(){
         }
         xAxis.setGranularity(1f);
 
+
         daily_barChart!!.data = data
+
 
 
         daily_barChart!!.setOnChartValueSelectedListener(
@@ -147,7 +182,7 @@ class MovementCountActivity: AppCompatActivity(){
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     if (e != null && e.x.toInt() < dates.count() ) {
                         Toast.makeText(
-                            this@MovementCountActivity,
+                            this@RestActivity,
                             "" + e.x + "," + e.y,
                             Toast.LENGTH_SHORT
                         ).show()
@@ -159,16 +194,18 @@ class MovementCountActivity: AppCompatActivity(){
                 }
             }
         )
+
         daily_barChart!!.setVisibleXRangeMaximum(5f); // allow 5 values to be displayed 5개만 보이게
 
-        daily_barChart!!.axisLeft.axisMinimum = 0f
-        daily_barChart!!.axisLeft.granularity = HomeActivity.dogDatas[HomeActivity.dog_index].d_goal_activity.toFloat()
+        //daily_barChart!!.axisLeft.axisMinimum = 0f
+        //daily_barChart!!.axisLeft.granularity = 60.0f // 30분 간격?
 
-        daily_barChart!!.moveViewToX(labelList.size - 1.toFloat() - fillCnt);
+        daily_barChart!!.moveViewToX(labelList.size - 1f - fillCnt);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         daily_barChart!!.animateXY(1000, 1000)
         daily_barChart!!.invalidate()
+
+
     }
 
     fun InitChart(chart: BarChart) {
@@ -216,7 +253,7 @@ class MovementCountActivity: AppCompatActivity(){
         }
 
 
-        val set = BarDataSet(entries, "걸음수")
+        val set = BarDataSet(entries, "심박수")
         set.color = Color.rgb(145, 224, 244)
         set.valueTextColor = R.color.colorBlueGreen
         set.valueTextSize = 10f
@@ -234,29 +271,25 @@ class MovementCountActivity: AppCompatActivity(){
             val decimalDigits: Int
                 get() = 0
         }
-
+        xAxis.setGranularity(1f);
 
         today_barChart!!.data = data
+
+        today_barChart!!.moveViewToX(labelList.size - 1.toFloat());
+
+        today_barChart!!.axisLeft.isEnabled = true
+        today_barChart!!.axisLeft.axisMinimum = 0f
+        today_barChart!!.axisLeft.granularity = 60f
+
         today_barChart!!.animateXY(1000, 1000)
         today_barChart!!.invalidate()
 
-        //today_barChart!!.setVisibleXRangeMaximum(5f); // allow 5 values to be displayed 5개만 보이게
-        today_barChart!!.moveViewToX(labelList.size - 1.toFloat());
 
-        var txt_d = findViewById(R.id.txt_distance) as TextView
-        var txt_w = findViewById(R.id.txt_walk_count) as TextView
-        var txt_r = findViewById(R.id.txt_run_count) as TextView
+        var txt_r = findViewById(R.id.txt_rest_time) as TextView
+        var txt_s = findViewById(R.id.txt_sleep_time) as TextView
 
-
-
-        today_barChart!!.axisLeft.isEnabled = true
-        daily_barChart!!.axisLeft.axisMinimum = 0f
-        daily_barChart!!.axisLeft.granularity = 100f
-
-        txt_d.text = (a.distance / 100.0).toInt().toString()  + "m"
-        txt_w.text = a.allWalk.toString() + "걸음"
-        txt_r.text = a.allRun.toString() + "걸음"
-
+        txt_r.text = (a.distance / 100.0).toString()  + "m"
+        txt_s.text = a.allWalk.toString() + "걸음"
         var txt_date = findViewById(R.id.txt_date) as TextView
         txt_date.text = date.toString()
         //today_barChart!!.xAxis.valueFormatter =   IAxisValueFormatter { value, axis -> mQuarter[value.toInt() % mQuarter.size] }

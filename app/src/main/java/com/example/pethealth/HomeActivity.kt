@@ -16,13 +16,9 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
-import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
@@ -40,10 +36,36 @@ enum class HOME_RESULT(var idx: Int) {
 }
 
 val MATERIAL_COLORS = intArrayOf(
-    R.color.colorBlueGreen,
-    R.color.colorSkyBlue,
-    R.color.colorLiteSkyBlue,
-    R.color.colorBeige
+    Color.rgb(0x0C ,0x90 ,0xAD) ,
+    Color.rgb(0x91,0xE0,0xF4),
+    Color.rgb(0xDA,0xEF,0xF5 ),
+    Color.rgb(0xF8,0xF1,0xE9 )
+)
+val mQuarter = arrayOf(
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23"
 )
 
 public class HomeActivity: AppCompatActivity() {
@@ -54,7 +76,7 @@ public class HomeActivity: AppCompatActivity() {
         @JvmStatic
         fun SetDogIndex(_index: Int) {
             dog_index = _index
-            prefs.setString("dog_index",_index.toString())
+            prefs.setString("dog_index", _index.toString())
         }
 
         lateinit var user_id: String
@@ -64,12 +86,15 @@ public class HomeActivity: AppCompatActivity() {
         var activity_data = ArrayList<ActivityData>()
 
         var analyzedActivityData = AnalyzedActivityData()
+        var result_activitys = ArrayList<AnalyzedActivityData>()
+
     }
 
 
     private var isRunning = false
+    private var isReady = false
     private val showActivityThread = ShowMyDogActivity()
-
+    private val getAllDataThread = GetAllDataThread()
     private var pieChart: PieChart? = null
     private var combinedChart: CombinedChart? = null
 
@@ -92,9 +117,7 @@ public class HomeActivity: AppCompatActivity() {
 
     private var bluetoothAddress: String = "24:6F:28:9D:47:76"
 
-    private val mQuarter = arrayOf(
-        "0", "3", "6", "9", "12", "15", "18", "21"
-    )
+
 
 
     override fun onDestroy() {
@@ -106,9 +129,6 @@ public class HomeActivity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-
-
-
         setContentView(R.layout.home_layout)
 
         txt_name = findViewById(R.id.txt_name)
@@ -155,9 +175,19 @@ public class HomeActivity: AppCompatActivity() {
 
                 try {
                     dogDatas = ConvertJsonToDogInfos(dog_list_json, user_id)
-                    dog_index = prefs.getString("dog_index","0").toInt() //로컬 데이터 읽어옴
+                    dog_index = prefs.getString("dog_index", "0").toInt() //로컬 데이터 읽어옴
+
+                    var data = ConnectToDB()
+                    data.dog_data = dogDatas[dog_index]
+                    data.type = DB_MODES.ACTODAY
+                    activity_today_json = doWork(data)
+                    analyzedActivityData = AnalyzedActivityData()
 
                     showActivityThread.interrupt()
+                    getAllDataThread.start()
+
+                    isReady = true;
+                    SetBtn()
 
                 }catch (e: JSONException) {
                     e.printStackTrace();
@@ -165,66 +195,75 @@ public class HomeActivity: AppCompatActivity() {
             }
         }
 
-
-        if(btnDogList.isEnabled){
-            btnDogList.setOnClickListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    job_get_dog_list.join()
-                    val intent: Intent = Intent(this@HomeActivity, DogListActivity::class.java)
-                    startActivityForResult(intent, 1)
-                }
-
+        btnDogList.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                // job_get_dog_list.join()
+                val intent: Intent = Intent(this@HomeActivity, DogListActivity::class.java)
+                startActivityForResult(intent, 1)
             }
-            btnDogList.setOnLongClickListener(){
-                CoroutineScope(Dispatchers.Main).launch {
 
-                }
-                true
-            }
         }
-        
-        
+        btnDogList.setOnLongClickListener(){
+            CoroutineScope(Dispatchers.Main).launch {
+
+            }
+            true
+        }
         layout_activity_info.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-             //활동 정보 요약을 클릭 시 상세한 정보를 볼 수 있다.
+                //활동 정보 요약을 클릭 시 상세한 정보를 볼 수 있다.
+
+                val intent: Intent = Intent(this@HomeActivity, MovementCountActivity::class.java)
+                startActivityForResult(intent, 1)
+
             }
 
         }
         layout_rest.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-
+                Toast.makeText(this@HomeActivity, "click layout_rest", Toast.LENGTH_SHORT).show()
+                val intent: Intent = Intent(this@HomeActivity, RestActivity::class.java)
+                startActivityForResult(intent, 1)
             }
 
         }
 
         layout_heart_rate.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(this@HomeActivity, "click layout_heart_rate"  , Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(this@HomeActivity, "click layout_heart_rate", Toast.LENGTH_SHORT).show()
+                val intent: Intent = Intent(this@HomeActivity, HeartbeatActivity::class.java)
+                startActivityForResult(intent, 1)
             }
 
         }
 
         layout_weight.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(this@HomeActivity, "click layout_weight"  , Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(this@HomeActivity, "click layout_weight", Toast.LENGTH_SHORT).show()
+                val intent: Intent = Intent(this@HomeActivity, WeightActivity::class.java)
+                startActivityForResult(intent, 1)
             }
 
         }
 
         btn_input_weight.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(this@HomeActivity, "click btn_input_weight" , Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@HomeActivity, "click btn_input_weight", Toast.LENGTH_SHORT).show()
 
             }
 
         }
     }
 
+    fun SetBtn (){
+        if(isReady){
+
+        }
+    }
     // =======================================
     var bt: BluetoothSPP? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun SetBluetooth() {
         val btnSend =  findViewById<Button>(R.id.btnSend) //데이터 전송
         btnSend.isEnabled = false;
@@ -245,6 +284,7 @@ public class HomeActivity: AppCompatActivity() {
             //데이터 수신
             Toast.makeText(this@HomeActivity, message, Toast.LENGTH_SHORT).show()
             DriverManager.println(message)
+            GetBluetoothMessage(message)
             // 명령 실행 ----------------------------------------------
         }
 
@@ -303,6 +343,32 @@ public class HomeActivity: AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun GetBluetoothMessage(msg: String){
+
+        if(msg.contains("d_id")){
+            var tokens = msg.split('=', '&')
+
+            var connectToServer = ConnectToServer()
+            connectToServer.data.msg = msg
+            connectToServer.data.type =  DB_MODES.ACADD
+            connectToServer.start()
+        }
+
+    }
+
+    inner class ConnectToServer : Thread() {
+        var data = ConnectToDB();
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun start() {
+            super.start()
+        }
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun run() {
+            var result_to_connect = doWork(data)
+            print("result_to_connect : " + result_to_connect)
+        }
+    }
 
 
     //==================================================
@@ -333,7 +399,10 @@ public class HomeActivity: AppCompatActivity() {
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
 
-                    val intent: Intent = Intent(this@HomeActivity, MovementCountActivity::class.java)
+                    val intent: Intent = Intent(
+                        this@HomeActivity,
+                        MovementCountActivity::class.java
+                    )
                     startActivityForResult(intent, 1)
 
                 }
@@ -352,9 +421,10 @@ public class HomeActivity: AppCompatActivity() {
 
          combinedChart = findViewById(R.id.combinedChart) as CombinedChart
 
-         combinedChart!!.setOnChartValueSelectedListener(  object : OnChartValueSelectedListener {
+         combinedChart!!.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
              override fun onNothingSelected() {
              }
+
              override fun onValueSelected(e: Entry?, h: Highlight?) {
              }
 
@@ -375,7 +445,7 @@ public class HomeActivity: AppCompatActivity() {
 
 
          combinedChart!!.setScaleEnabled(false) // 확대 막기
-
+         combinedChart!!.setVisibleXRangeMaximum(24f);
 
          val l = combinedChart!!.legend
         l.isWordWrapEnabled = true
@@ -386,16 +456,18 @@ public class HomeActivity: AppCompatActivity() {
 
         val rightAxis = combinedChart!!.axisRight
         rightAxis.setDrawGridLines(false)
-        rightAxis.granularity = 10f
+        rightAxis.granularity = 200f
         rightAxis.axisMinimum = 0f
-
+         rightAxis.isEnabled = true
+         rightAxis.textColor = MATERIAL_COLORS[0]
         val leftAxis = combinedChart!!.axisLeft
         leftAxis.setDrawGridLines(false)
         leftAxis.granularity = 10f // 한칸의 크기
-        leftAxis.axisMinimum = 0f
-
-        val xAxis = combinedChart!!.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTH_SIDED
+        leftAxis.axisMinimum = 50f
+         leftAxis.isEnabled = true
+         leftAxis.textColor = MATERIAL_COLORS[1]
+         val xAxis = combinedChart!!.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.axisMinimum = 0f
         xAxis.granularity = 1f
 
@@ -408,12 +480,20 @@ public class HomeActivity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun DrawCombinedChart (){
         val data = CombinedData()
+
         data.setData(generateLineData())
         data.setData(generateBarData())
+        data.barData.barWidth = 0.1f
 
         combinedChart!!.xAxis.axisMaximum = data.xMax + 0.25f
         combinedChart!!.data = data
         combinedChart!!.invalidate()
+
+        val l: Legend = combinedChart!!.legend
+        val l1 = LegendEntry("Movement", Legend.LegendForm.DEFAULT, 10f, 2f, null, MATERIAL_COLORS[0])
+        val l2 = LegendEntry("Heartbeat", Legend.LegendForm.CIRCLE, 10f, 2f, null, MATERIAL_COLORS[1])
+        l.setCustom(arrayOf(l1, l2))
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -424,7 +504,8 @@ public class HomeActivity: AppCompatActivity() {
         val entries = ArrayList<Entry>()
 
         var value: Int= 0
-        for (index in 0..date.hour) {
+        for (index in 0..23) { // date.hour
+            /*
             value += analyzedActivityData.avgHeartRatePerHour[index]
             if(index%3 == 2){
                 entries.add(Entry((index / 3).toFloat(), value.toFloat()))
@@ -434,17 +515,30 @@ public class HomeActivity: AppCompatActivity() {
                 entries.add(Entry((index / 3).toFloat(), value.toFloat()))
                 value = 0
             }
+
+             */
+            if(index < date.hour){
+                entries.add(
+                    Entry(
+                        index.toFloat(),
+                        analyzedActivityData.avgHeartRatePerHour[index].toFloat()
+                    )
+                )
+            }
+
+
+
         }
 
-        val set = LineDataSet(entries, "Line DataSet")
+        val set = LineDataSet(entries, "Heartbeat")
         set.color = Color.rgb(145, 224, 244)
-        set.lineWidth = 2.5f
+        set.lineWidth = 1f
         set.setCircleColor(Color.rgb(145, 224, 244))
-        set.circleRadius = 5f
+        set.circleRadius = 3f
         set.fillColor = Color.rgb(145, 224, 244)//Color.rgb(0, 100, 0)
         set.mode = LineDataSet.Mode.CUBIC_BEZIER
-        set.setDrawValues(true)
-        set.valueTextSize = 10f
+        set.setDrawValues(false)
+        set.valueTextSize = 0f
         set.valueTextColor = Color.rgb(145, 224, 244)
         set.axisDependency = YAxis.AxisDependency.LEFT
         d.addDataSet(set)
@@ -457,7 +551,8 @@ public class HomeActivity: AppCompatActivity() {
         val entries = ArrayList<BarEntry>()
 
         var value: Int= 0
-        for (index in 0..date.hour) {
+        for (index in 0..23) {
+            /*
             value += analyzedActivityData.movementPerHour[index]
             if(index%3 == 2){
                 entries.add(BarEntry((index / 3).toFloat(), value.toFloat()))
@@ -467,11 +562,30 @@ public class HomeActivity: AppCompatActivity() {
                 entries.add(BarEntry((index / 3).toFloat(), value.toFloat()))
                 value = 0
             }
+            */
+            if(index <= date.hour){
+                entries.add(
+                    BarEntry(
+                        index.toFloat(),
+                        analyzedActivityData.movementPerHour[index].toFloat()
+                    )
+                )
+            }
+            else {
+                entries.add(
+                    BarEntry(
+                        index.toFloat(),
+                        0f
+                    )
+                )
+            }
+
         }
 
-        val set = BarDataSet(entries, "Bar DataSet")
-        set.color = R.color.colorBlueGreen
-        set.valueTextColor = R.color.colorBlueGreen
+        val set = BarDataSet(entries, "Movement")
+        set.color = MATERIAL_COLORS[0]
+        set.valueTextColor =  MATERIAL_COLORS[0]
+        set.setDrawValues(false)
         set.valueTextSize = 10f
         set.axisDependency = YAxis.AxisDependency.RIGHT
         return BarData(set)
@@ -512,24 +626,46 @@ public class HomeActivity: AppCompatActivity() {
         }
         override fun run() {
             runOnUiThread {
-                pieChart!!.animateY(1000, Easing.EasingOption.EaseInOutCubic) //애니메이션
+                pieChart!!.animateY(1000 /*Easing.EasingOption.EaseInOutCubic*/) //애니메이션
                 combinedChart!!.animateXY(1000, 1000)
+
             }
+        }
+    }
+
+    inner class GetAllDataThread : Thread() {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun start() {
+            super.start()
 
         }
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun run() {
+            val today: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+            var data = ConnectToDB()
+            data.type = DB_MODES.RESGET
+            for( d in dogDatas){
+                data.dog_data = d
+                var alldatas = doWork(data)
+                var infos = ConvertJsonToAnalyzedActivity(alldatas)
+                result_activitys.addAll(infos)
+            }
 
+
+             println("Finish result activity " + result_activitys.size)
+        }
     }
 
     inner class ShowMyDogActivity : Thread() {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
+            var eFlag =  false;
+            var firstFlag = true;
             while(isRunning){
 
-                    try {
+                try {
                     var startTime = System.currentTimeMillis()
                     if(dog_index >= 0 && dog_index < dogDatas.size){
-
-
 
                         /* Get Today Activity Data */
                         var data = ConnectToDB()
@@ -542,6 +678,7 @@ public class HomeActivity: AppCompatActivity() {
                         activity_data = ConvertJsonToActivityData(activity_today_json);
 
                         analyzedActivityData.AnalyzeActivity(
+                            dogDatas[dog_index].d_id.toInt(),
                             activity_data,
                             data.dog_data.d_goal_activity
                         )
@@ -557,7 +694,7 @@ public class HomeActivity: AppCompatActivity() {
                             txt_rest_time.text = analyzedActivityData.dailyRestTime.toString() + " 분"
                             txt_sleep_time.text = analyzedActivityData.dailySleepTime.toString() + " 분"
                             txt_movement_time.text = analyzedActivityData.movementTime.toString() + " 분"
-                            txt_movement_distance.text = "0.0 km"
+                            txt_movement_distance.text = (analyzedActivityData.distance / 100.0).toInt().toString() + " m"
                         }
                     }
 
@@ -567,6 +704,7 @@ public class HomeActivity: AppCompatActivity() {
                     sleep(60 * 1000 - (spentTime))
                 }
                 catch (e: InterruptedException){
+                    eFlag = true;
                     println("INTERRUPT " + e) // interrupt 발생 시 강제로 sleep 을 깨울 수 있음
                 }
             }
@@ -597,9 +735,10 @@ public class HomeActivity: AppCompatActivity() {
                 bt!!.startService(BluetoothState.DEVICE_OTHER)
                 BluetoothServiceSet()
             } else {
+
                 Toast.makeText(applicationContext, "Bluetooth was not enabled.", Toast.LENGTH_SHORT).show()
                 val btnSend =  findViewById<Button>(R.id.btnSend) //데이터 전송
-                btnSend.isEnabled = false;
+                    btnSend.isEnabled = false;
             }
         }
     }

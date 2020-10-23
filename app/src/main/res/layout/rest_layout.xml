@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+android:layout_width="match_parent"
+android:layout_height="wrap_content">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,12 +19,13 @@
                 android:orientation="vertical"
                 android:padding="40dp">
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:text="활동정보"
+                    android:text="휴식 정보"
                     android:textSize="30dp"
                     android:textStyle="bold" />
 
@@ -32,17 +33,20 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@color/colorLightGray" />
 
+
+
                 <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/daily_movement_chart"
+                    android:id="@+id/daily_rest_chart"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp">
 
                 </com.github.mikephil.charting.charts.BarChart>
+
 
                 <TextView
                     android:id="@+id/txt_date"
@@ -53,7 +57,7 @@
                     android:text="20-10-21" />
 
                 <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/today_movement_chart"
+                    android:id="@+id/today_rest_chart"
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
@@ -72,15 +76,15 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="거리" />
+                        android:text="휴식시간" />
 
                     <TextView
 
-                        android:id="@+id/txt_distance"
+                        android:id="@+id/txt_rest_time"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="3km" />
+                        android:text="" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -94,15 +98,15 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="걸은 수" />
+                        android:text="취침시간" />
 
                     <TextView
 
-                        android:id="@+id/txt_walk_count"
+                        android:id="@+id/txt_sleep_time"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="1253" />
+                        android:text="" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -117,7 +121,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="달린 수" />
+                        android:text="" />
 
                     <TextView
 
@@ -125,9 +129,8 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="359" />
+                        android:text="" />
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

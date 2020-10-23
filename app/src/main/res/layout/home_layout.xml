@@ -10,48 +10,7 @@
 
     <!-- Tool Bar -->
     <include layout="@layout/layout_toolbar" />
-
     <!-- Main View -->
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <Button
-            android:id="@+id/btn_dog_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="Dog List" />
-
-
-        <Button
-            android:id="@+id/btnConnect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="연결" />
-
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="보내기" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_name"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="이름"
-        android:textAlignment="center"
-        android:textColor="@color/colorBlueGreen"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,6 +27,55 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_dog_list"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/list"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="10dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_name"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="이름"
+                        android:textSize="15dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBlueGreen"/>
+
+                    <Button
+                        android:id="@+id/btnConnect"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bluetooth"
+                        />
+
+                    <Button
+                        android:id="@+id/btnSend"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        />
+
+
+
+                </LinearLayout>
+
+
+
+
+
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/piechart"
                     android:layout_width="250dp"
@@ -79,7 +87,7 @@
 
                 <com.github.mikephil.charting.charts.CombinedChart
                     android:id="@+id/combinedChart"
-                    android:layout_width="250dp"
+                    android:layout_width="325dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp">

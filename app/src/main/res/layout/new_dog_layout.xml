@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="40dp"
-        android:text="강아지 추가"
+        android:text="반려견 정보"
         android:textSize="30dp"
         android:textStyle="bold" />
 
@@ -23,192 +23,205 @@
         android:background="@color/colorLightGray"
         android:layout_marginBottom="30dp"/>
 
-    <!-- Name layout -->
-    <LinearLayout
-        android:id="@+id/linear_new_dog_name"
+
+
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="20dp"
-            android:layout_marginBottom="5dp"/>
-        <EditText
-            android:id="@+id/et_new_dog_name"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+            android:orientation="vertical" >
+            <!-- Name layout -->
+            <LinearLayout
+                android:id="@+id/linear_new_dog_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="20dp"
+                    android:layout_marginBottom="5dp"/>
+                <EditText
+                    android:id="@+id/et_new_dog_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"/>
+            </LinearLayout>
 
-    <!-- ID layout -->
-    <LinearLayout
-        android:id="@+id/linear_new_dog_breed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+            <!-- ID layout -->
+            <LinearLayout
+                android:id="@+id/linear_new_dog_breed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Breed"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_breed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Breed"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_breed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"/>
+            </LinearLayout>
 
-    <!-- PW layout -->
-    <LinearLayout
-        android:id="@+id/linear_new_dog_height"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+            <!-- PW layout -->
+            <LinearLayout
+                android:id="@+id/linear_new_dog_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Height"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_height"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="textPassword"/>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Height"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"
+                    android:inputType="textPassword"/>
+            </LinearLayout>
 
-    <!-- E-mail layout -->
-    <LinearLayout
-        android:id="@+id/linear_new_dog_weight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+            <!-- E-mail layout -->
+            <LinearLayout
+                android:id="@+id/linear_new_dog_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Weight"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_weight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"/>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Weight"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"/>
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linear_new_dog_length"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+            <LinearLayout
+                android:id="@+id/linear_new_dog_length"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Length"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_length"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="numberDecimal"/>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Length"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_length"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linear_new_dog_age"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+            <LinearLayout
+                android:id="@+id/linear_new_dog_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Age"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="numberDecimal"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linear_new_dog_goal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Age"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linear_new_dog_goal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Goal"
-            android:textSize="20dp" />
-        <EditText
-            android:id="@+id/et_new_dog_goal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="15dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/round_border_thin"
-            android:inputType="numberDecimal"/>
-    </LinearLayout>
-    <!-- Join -->
-    <Button
-        android:id="@+id/btn_join"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Join"
-        android:layout_marginTop="5dp"
-        android:layout_gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Goal"
+                    android:textSize="20dp" />
+                <EditText
+                    android:id="@+id/et_new_dog_goal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/round_border_thin"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
+            <!-- Join -->
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="완료"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

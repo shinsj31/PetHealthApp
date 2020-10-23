@@ -2,14 +2,17 @@ package com.example.pethealth
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class NewDogActivity: AppCompatActivity() {
     private lateinit var et_dname: EditText
@@ -25,6 +28,7 @@ class NewDogActivity: AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.new_dog_layout)
@@ -76,7 +80,7 @@ class NewDogActivity: AppCompatActivity() {
             data.dog_data = DogInfo(
                 login_info, d_id, et_dname.text.toString(), et_dbreed.text.toString(),
                 et_dheight.text.toString(), et_dlength.text.toString(), et_dweight.text.toString(),
-                et_dage.text.toString(), Integer.parseInt(et_dgoal.text.toString())
+                et_dage.text.toString(), Integer.parseInt(et_dgoal.text.toString()) , LocalDate.now()
             )
 
 

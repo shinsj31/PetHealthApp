@@ -44,6 +44,9 @@
         <activity android:name=".BluetoothService" />
         <activity android:name=".ChartActivity" />
         <activity android:name=".MovementCountActivity" />
+        <activity android:name=".RestActivity" />
+        <activity android:name=".HeartbeatActivity"/>
+        <activity android:name=".WeightActivity" />
     </application>
 
 </manifest>

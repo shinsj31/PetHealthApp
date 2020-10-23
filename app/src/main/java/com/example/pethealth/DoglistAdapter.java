@@ -79,14 +79,10 @@ public class DoglistAdapter extends BaseAdapter {
                 }
             });
 
-        }
-        if(mViewHolder.btn_modify != null){
-            //buttons.add(btn);
-
-            mViewHolder.btn_modify.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
+            mViewHolder.btn_select.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
                     Toast.makeText(mContext, dogInfo.getD_name(), Toast.LENGTH_SHORT).show();
-
                     Intent intent = new Intent(mContext, NewDogActivity.class);
                     intent.putExtra("user_id",HomeActivity.user_id);
                     intent.putExtra("dname",dogInfo.getD_name());
@@ -97,12 +93,12 @@ public class DoglistAdapter extends BaseAdapter {
                     intent.putExtra("dage",dogInfo.getD_age());
                     intent.putExtra("dgoal",dogInfo.getD_goal_activity()+"");
                     intent.putExtra("d_id",dogInfo.getD_id());
-
                     activity.startActivityForResult(intent, 1);
 
-
+                    return false;
                 }
             });
+
 
         }
 
@@ -120,7 +116,7 @@ public class DoglistAdapter extends BaseAdapter {
                     data.dog_data = new DogInfo(
                             login_info ,dogInfo.getD_id(), dogInfo.getD_name(),  dogInfo.getD_breed(),
                             dogInfo.getD_height(), dogInfo.getD_length(), dogInfo.getD_weight(),
-                            dogInfo.getD_age(),dogInfo.getD_goal_activity()
+                            dogInfo.getD_age(),dogInfo.getD_goal_activity(), dogInfo.getD_join_date()
                     );
                     data.type = DB_MODES.DDEL;
                    //TODO:제거 버튼 :: Error android.os.NetworkOnMainThreadException
@@ -143,17 +139,17 @@ public class DoglistAdapter extends BaseAdapter {
 
 
     public class ViewHolder {
-        private Button btn_select ,btn_modify,btn_remove;
+        private Button btn_select ,btn_remove;
         public ViewHolder(View convertView) {
             btn_select = (Button) convertView.findViewById(R.id.tv_dog_name);
-            btn_modify = convertView.findViewById(R.id.btn_dog_modify);
+
             btn_remove = convertView.findViewById(R.id.btn_dog_remove);
         }
 
         @SuppressLint("WrongConstant")
         public void Destroy(){
             btn_select.setVisibility(0);
-            btn_modify.setVisibility(0);
+
             btn_remove.setVisibility(0);
         }
 

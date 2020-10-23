@@ -24,7 +24,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:text="활동정보"
+                    android:text="심박수"
                     android:textSize="30dp"
                     android:textStyle="bold" />
 
@@ -35,14 +35,16 @@
                     android:layout_marginBottom="30dp"
                     android:background="@color/colorLightGray" />
 
+
                 <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/daily_movement_chart"
+                    android:id="@+id/daily_heartbeat_chart"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp">
 
                 </com.github.mikephil.charting.charts.BarChart>
+
 
                 <TextView
                     android:id="@+id/txt_date"
@@ -52,14 +54,14 @@
                     android:paddingTop="10dp"
                     android:text="20-10-21" />
 
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/today_movement_chart"
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/today_heartbeat_chart"
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp">
 
-                </com.github.mikephil.charting.charts.BarChart>
+                </com.github.mikephil.charting.charts.LineChart>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,15 +74,15 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="거리" />
+                        android:text="" />
 
                     <TextView
 
-                        android:id="@+id/txt_distance"
+                        android:id="@+id/txt_heartbeat1"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="3km" />
+                        android:text="" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -94,15 +96,15 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="걸은 수" />
+                        android:text="" />
 
                     <TextView
 
-                        android:id="@+id/txt_walk_count"
+                        android:id="@+id/txt_heartbeat2"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="1253" />
+                        android:text="" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -117,7 +119,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="달린 수" />
+                        android:text="" />
 
                     <TextView
 
@@ -125,7 +127,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="359" />
+                        android:text="" />
                 </LinearLayout>
 
             </LinearLayout>
