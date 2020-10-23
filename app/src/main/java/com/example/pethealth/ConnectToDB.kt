@@ -5,11 +5,10 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
-import java.util.*
 
 private val TAG: String = "Connect To DB"
 private val SERVER_IPs: Array<String> = arrayOf("125.130.64.113" , "220.93.33.240")
-private var IP_ADDR: String = "220.93.33.240"// 수정 서버 "125.130.64.113"//"192.168.10.2" (http://192.168.10.1/ WAN IP 주소)
+private var IP_ADDR: String = "192.168.10.6"// 수정 서버 "125.130.64.113"//"192.168.10.2" (http://192.168.10.1/ WAN IP 주소)
 // 석호 서버 "220.93.33.240"
 private val db_mode: Array<String> = arrayOf("login", "join", "add", "delete", "modify", "list","add","delete", "update", "info" ,
     "add" , "all", "date", "today" , "curr" ,"get","add" , "weight"

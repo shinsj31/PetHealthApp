@@ -44,13 +44,22 @@
 
                 </com.github.mikephil.charting.charts.BarChart>
 
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorLightGray" />
+
                 <TextView
                     android:id="@+id/txt_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingTop="10dp"
-                    android:text="20-10-21" />
+                    android:text="-"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/today_movement_chart"
@@ -72,7 +81,8 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="거리" />
+                        android:text="거리"
+                        android:textStyle="bold" />
 
                     <TextView
 
@@ -94,7 +104,8 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="걸은 수" />
+                        android:text="걸은 수"
+                        android:textStyle="bold" />
 
                     <TextView
 
@@ -117,7 +128,8 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="달린 수" />
+                        android:text="달린 수"
+                        android:textStyle="bold" />
 
                     <TextView
 

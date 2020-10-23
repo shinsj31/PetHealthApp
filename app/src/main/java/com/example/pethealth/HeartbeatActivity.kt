@@ -156,7 +156,11 @@ class HeartbeatActivity: AppCompatActivity(){
                         ).show()
                         //DrawTodayChart(dates[e.x.toInt()-1])
                         date = dates[e.x.toInt()]
+                        var txt_r = findViewById(R.id.txt_heartbeat1) as TextView
+                        txt_r.text = e.y.toString()  + "bpm"
 
+                        var txt_date = findViewById(R.id.txt_date) as TextView
+                        txt_date.text = date.toString()
                         DrawTodayChart(date)
                     }
                 }
@@ -177,7 +181,7 @@ class HeartbeatActivity: AppCompatActivity(){
     }
 
     fun InitChart(chart: BarChart) {
-        chart!!.setBackgroundColor(Color.WHITE)
+        //chart!!.setBackgroundColor(Color.WHITE)
         chart!!.isHighlightFullBarEnabled = false
         chart!!.setScaleEnabled(false) // 확대 막기
         chart!!.description.isEnabled = false //차트 옆에 별도로 표기되는 description이다. false로 설정하여 안보이게 했다.
@@ -194,7 +198,7 @@ class HeartbeatActivity: AppCompatActivity(){
 
     }
     fun InitChart(chart: LineChart) {
-        chart!!.setBackgroundColor(Color.WHITE)
+        //chart!!.setBackgroundColor(Color.WHITE)
 
         chart!!.setScaleEnabled(false) // 확대 막기
         chart!!.description.isEnabled = false //차트 옆에 별도로 표기되는 description이다. false로 설정하여 안보이게 했다.
@@ -270,13 +274,11 @@ class HeartbeatActivity: AppCompatActivity(){
         today_lineChart!!.invalidate()
 
 
-        var txt_r = findViewById(R.id.txt_heartbeat1) as TextView
+
         //var txt_s = findViewById(R.id.txt_heartbeat2) as TextView
 
-        txt_r.text = a.avgDailyHeartRate.toString()  + "bpm"
-        //txt_s.text = a.allWalk.toString() + "걸음" // 스트레스
-        var txt_date = findViewById(R.id.txt_date) as TextView
-        txt_date.text = date.toString()
+
+
         //today_barChart!!.xAxis.valueFormatter =   IAxisValueFormatter { value, axis -> mQuarter[value.toInt() % mQuarter.size] }
     }
 

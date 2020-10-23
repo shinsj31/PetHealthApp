@@ -48,13 +48,22 @@ android:layout_height="wrap_content">
                 </com.github.mikephil.charting.charts.BarChart>
 
 
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorLightGray" />
+
                 <TextView
                     android:id="@+id/txt_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingTop="10dp"
-                    android:text="20-10-21" />
+                    android:text="-"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/today_rest_chart"
@@ -76,7 +85,8 @@ android:layout_height="wrap_content">
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="휴식시간" />
+                        android:text="휴식시간"
+                        android:textStyle="bold" />
 
                     <TextView
 
@@ -98,7 +108,8 @@ android:layout_height="wrap_content">
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="취침시간" />
+                        android:text="취침시간"
+                        android:textStyle="bold" />
 
                     <TextView
 

@@ -9,12 +9,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -102,7 +104,7 @@ class WeightActivity: AppCompatActivity(){
         entries1.add(
             BarEntry(
                 valList.size.toFloat(),
-                HomeActivity.analyzedActivityData.avgDailyHeartRate.toFloat()
+                HomeActivity.dogDatas[HomeActivity.dog_index].d_weight.toFloat()
             )
         )
 
@@ -194,7 +196,7 @@ class WeightActivity: AppCompatActivity(){
     }
 
     fun InitChart(chart: LineChart) {
-        chart!!.setBackgroundColor(Color.WHITE)
+        //chart!!.setBackgroundColor(Color.WHITE)
 
         chart!!.setScaleEnabled(false) // 확대 막기
         chart!!.description.isEnabled = false //차트 옆에 별도로 표기되는 description이다. false로 설정하여 안보이게 했다.

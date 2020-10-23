@@ -172,7 +172,7 @@ class MovementCountActivity: AppCompatActivity(){
     }
 
     fun InitChart(chart: BarChart) {
-        chart!!.setBackgroundColor(Color.WHITE)
+        //chart!!.setBackgroundColor(Color.WHITE)
         chart!!.isHighlightFullBarEnabled = false
         chart!!.setScaleEnabled(false) // 확대 막기
         chart!!.description.isEnabled = false //차트 옆에 별도로 표기되는 description이다. false로 설정하여 안보이게 했다.

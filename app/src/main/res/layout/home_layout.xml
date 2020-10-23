@@ -46,13 +46,13 @@
 
                     <TextView
                         android:id="@+id/txt_name"
-                        android:layout_width="250dp"
+                        android:layout_width="220dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="이름"
-                        android:textSize="15dp"
                         android:textAlignment="center"
-                        android:textColor="@color/colorBlueGreen"/>
+                        android:textColor="@color/colorBlueGreen"
+                        android:textSize="20dp" />
 
                     <Button
                         android:id="@+id/btnConnect"
@@ -96,7 +96,7 @@
 
                 <LinearLayout
                     android:id="@+id/layout_activity_time"
-                    android:layout_width="match_parent"
+                    android:layout_width="370dp"
                     android:layout_height="75dp"
                     android:layout_gravity="center"
 
@@ -106,10 +106,10 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:textColor="@color/colorBlueGreen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="활동시간"
+                        android:textColor="@color/colorBlueGreen"
                         tools:ignore="MissingConstraints" />
 
                     <Space
@@ -126,8 +126,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="60분"
-                            tools:ignore="MissingConstraints"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen"
+                            tools:ignore="MissingConstraints" />
 
                         <Space
                             android:layout_width="152dp"
@@ -138,8 +138,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="10.0 km"
-                            tools:ignore="MissingConstraints"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen"
+                            tools:ignore="MissingConstraints" />
 
                     </LinearLayout>
 
@@ -147,11 +147,11 @@
 
                 <LinearLayout
                     android:id="@+id/layout_rest_time"
-                    android:layout_width="match_parent"
+                    android:layout_width="370dp"
                     android:layout_height="75dp"
-                    android:layout_margin="5dp"
-
                     android:layout_gravity="center"
+
+                    android:layout_margin="5dp"
                     android:background="@drawable/round_border_home"
                     android:orientation="vertical">
 
@@ -166,7 +166,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="휴식 시간"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
                         <TextView
 
@@ -174,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="자는 시간"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
                     </LinearLayout>
 
                     <Space
@@ -192,7 +192,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="30분"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
                         <TextView
                             android:id="@+id/txt_sleep_time"
@@ -200,18 +200,18 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="60분"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layout_heart_rate"
-                    android:layout_width="match_parent"
+                    android:layout_width="370dp"
                     android:layout_height="75dp"
-                    android:layout_margin="5dp"
-
                     android:layout_gravity="center"
+
+                    android:layout_margin="5dp"
                     android:background="@drawable/round_border_home"
                     android:orientation="vertical">
 
@@ -226,7 +226,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="심박수/스트레스"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
                         <TextView
 
@@ -234,7 +234,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text=""
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
                     </LinearLayout>
 
                     <Space
@@ -252,7 +252,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="30 bpm"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
                         <TextView
 
@@ -260,14 +260,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text=""
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layout_weight"
-                    android:layout_width="match_parent"
+                    android:layout_width="370dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
 
@@ -286,7 +286,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="체중"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
                         <TextView
 
@@ -311,15 +311,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="3.0 kg"
-                            android:textColor="@color/colorBlueGreen"/>
+                            android:textColor="@color/colorBlueGreen" />
 
-                        <Button
-                            android:id="@+id/btn_input_weight"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Button"
-                            android:textColor="@color/colorBlueGreen"/>
 
                     </LinearLayout>
 

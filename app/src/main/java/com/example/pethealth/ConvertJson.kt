@@ -56,8 +56,14 @@ public fun ConvertJsonToDogInfo (json :String, user_id : String ) : DogInfo? {
 
 @RequiresApi(Build.VERSION_CODES.O)
 public fun ConvertJsonToDogWeight (json :String ) : ArrayList<WeightChange> {
-    var jarray = JSONArray(json);   // JSONArray 생성
     var infos = ArrayList<WeightChange>();
+    if( json.contains(("false")) || json.contains(("Error"))){
+
+        return infos
+    }
+
+    var jarray = JSONArray(json);   // JSONArray 생성
+
     for( i in 0..(jarray.length() - 1)) {
 
         var jObject = jarray.getJSONObject(i) // JSONObject 추출

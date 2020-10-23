@@ -40,6 +40,8 @@ val MATERIAL_COLORS = intArrayOf(
     Color.rgb(0x91,0xE0,0xF4),
     Color.rgb(0xDA,0xEF,0xF5 ),
     Color.rgb(0xF8,0xF1,0xE9 )
+
+
 )
 val mQuarter = arrayOf(
     "0",
@@ -112,7 +114,6 @@ public class HomeActivity: AppCompatActivity() {
     private lateinit var txt_sleep_time :TextView
     private lateinit var txt_heart_rate :TextView
     private lateinit var txt_weight :TextView
-    private lateinit var btn_input_weight : Button
 
 
     private var bluetoothAddress: String = "24:6F:28:9D:47:76"
@@ -144,7 +145,6 @@ public class HomeActivity: AppCompatActivity() {
         txt_sleep_time =findViewById(R.id.txt_sleep_time)
         txt_heart_rate =findViewById(R.id.txt_heart_rate)
         txt_weight =findViewById(R.id.txt_weight)
-        btn_input_weight =findViewById(R.id.btn_input_weight) // 몸무게 정보 입력
 
         SetPieChart()
         SetCombineChart()
@@ -246,13 +246,7 @@ public class HomeActivity: AppCompatActivity() {
 
         }
 
-        btn_input_weight.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(this@HomeActivity, "click btn_input_weight", Toast.LENGTH_SHORT).show()
 
-            }
-
-        }
     }
 
     fun SetBtn (){
@@ -431,7 +425,7 @@ public class HomeActivity: AppCompatActivity() {
          })
 
         combinedChart!!.description.isEnabled = false
-        combinedChart!!.setBackgroundColor(Color.WHITE)
+        //combinedChart!!.setBackgroundColor(Color.WHITE)
         combinedChart!!.setDrawGridBackground(false)
         combinedChart!!.setDrawBarShadow(false)
         combinedChart!!.isHighlightFullBarEnabled = false
@@ -595,19 +589,21 @@ public class HomeActivity: AppCompatActivity() {
 
     fun DrawPieChart(walk: Int, goal: Int){
         val yValues = ArrayList<PieEntry>()
-        yValues.add(PieEntry(walk.toFloat(), "Walk"))
+        yValues.add(PieEntry(walk.toFloat(), "활동"))
 
         if(walk < goal)
-            yValues.add(PieEntry((goal - walk).toFloat(), "Goal"))
+            yValues.add(PieEntry((goal - walk).toFloat(), "목표"))
 
-        val dataSet = PieDataSet(yValues, "Activity")
+        val dataSet = PieDataSet(yValues, "")
         dataSet.sliceSpace = 3f
         dataSet.selectionShift = 5f
 
 
       //  dataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
-        dataSet.addColor(Color.rgb(145, 224, 244))
-        dataSet.addColor(Color.rgb(0, 224, 244))
+        dataSet.addColor(MATERIAL_COLORS[1])
+        dataSet.addColor(MATERIAL_COLORS[0])
+
+        pieChart!!.getLegend().setEnabled(false);
 
         pieChart!!.centerText = walk.toString() + "/" + goal.toString()
 
@@ -689,10 +685,18 @@ public class HomeActivity: AppCompatActivity() {
 
                         runOnUiThread {
                             txt_name.text = dogDatas[dog_index].d_name
-                            txt_weight.text = dogDatas[dog_index].d_weight
+                            txt_weight.text = dogDatas[dog_index].d_weight.toString() + " kg"
                             txt_heart_rate.text = analyzedActivityData.avgDailyHeartRate.toString() + " bpm"
-                            txt_rest_time.text = analyzedActivityData.dailyRestTime.toString() + " 분"
-                            txt_sleep_time.text = analyzedActivityData.dailySleepTime.toString() + " 분"
+                            if(analyzedActivityData.dailyRestTime > 60 )
+                                txt_rest_time.text = (analyzedActivityData.dailyRestTime / 60.0).toInt().toString() +" 시간 " + (analyzedActivityData.dailyRestTime % 60.0).toInt().toString()+ "분"
+                            else
+                                txt_rest_time.text =(analyzedActivityData.dailyRestTime).toString()+ "분"
+
+                            if(analyzedActivityData.dailySleepTime > 60 )
+                                txt_sleep_time.text =(analyzedActivityData.dailySleepTime / 60.0).toInt().toString() +" 시간 " + (analyzedActivityData.dailySleepTime % 60.0).toInt().toString()+ "분"
+                            else
+                                txt_sleep_time.text = (analyzedActivityData.dailySleepTime).toString()+ "분"
+
                             txt_movement_time.text = analyzedActivityData.movementTime.toString() + " 분"
                             txt_movement_distance.text = (analyzedActivityData.distance / 100.0).toInt().toString() + " m"
                         }

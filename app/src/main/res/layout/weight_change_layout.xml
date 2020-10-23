@@ -46,13 +46,22 @@
 
                 </com.github.mikephil.charting.charts.LineChart>
 
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorLightGray" />
+
                 <TextView
                     android:id="@+id/txt_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingTop="10dp"
-                    android:text="20-10-21" />
+                    android:text="-"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -62,22 +71,31 @@
 
                     <TextView
 
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="" />
-
-                    <TextView
-
                         android:id="@+id/txt_weight1"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:text="" />
+
                 </LinearLayout>
 
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btn_update_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="체중 입력" android:background="@drawable/round_border_add"/>
 
             </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 

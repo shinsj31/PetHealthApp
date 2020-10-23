@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Button"
+        android:background="@drawable/round_border"
+        android:layout_margin="10dp"
         />
 
     <Button

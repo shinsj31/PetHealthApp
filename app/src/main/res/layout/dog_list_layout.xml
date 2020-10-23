@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#55000000"
+    android:background="#FFFFFF"
     android:paddingLeft="40dp"
-    android:paddingTop="100dp"
+    android:paddingTop="80dp"
     android:paddingRight="40dp"
-    android:paddingBottom="100dp">
+    android:paddingBottom="80dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="반려견 선택"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <!-- partition line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="30dp"
+            android:background="@color/colorLightGray" />
 
         <ListView
             android:id="@+id/lv_dog"
@@ -25,7 +42,10 @@
             android:id="@+id/btn_new_dog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Dog"></Button>
+            android:text="추가"
+            android:background="@drawable/round_border_add">
+
+        </Button>
     </LinearLayout>
 
 

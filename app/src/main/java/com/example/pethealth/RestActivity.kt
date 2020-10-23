@@ -209,7 +209,7 @@ class RestActivity: AppCompatActivity(){
     }
 
     fun InitChart(chart: BarChart) {
-        chart!!.setBackgroundColor(Color.WHITE)
+        //chart!!.setBackgroundColor(Color.WHITE)
         chart!!.isHighlightFullBarEnabled = false
         chart!!.setScaleEnabled(false) // 확대 막기
         chart!!.description.isEnabled = false //차트 옆에 별도로 표기되는 description이다. false로 설정하여 안보이게 했다.
@@ -288,8 +288,16 @@ class RestActivity: AppCompatActivity(){
         var txt_r = findViewById(R.id.txt_rest_time) as TextView
         var txt_s = findViewById(R.id.txt_sleep_time) as TextView
 
-        txt_r.text = (a.distance / 100.0).toString()  + "m"
-        txt_s.text = a.allWalk.toString() + "걸음"
+        if(a.dailyRestTime > 60.0 )
+            txt_r.text = (a.dailyRestTime / 60.0).toInt().toString() +" 시간 " + (a.dailyRestTime % 60.0).toInt().toString()+ "분"
+        else
+            txt_r.text =  (a.dailyRestTime).toInt().toString()+ "분"
+
+        if(a.dailySleepTime > 60.0 )
+            txt_s.text = (a.dailySleepTime / 60.0).toInt().toString() +" 시간 " + (a.dailySleepTime % 60.0).toInt().toString()+ "분"
+        else
+            txt_s.text = (a.dailySleepTime).toString()+ "분"
+
         var txt_date = findViewById(R.id.txt_date) as TextView
         txt_date.text = date.toString()
         //today_barChart!!.xAxis.valueFormatter =   IAxisValueFormatter { value, axis -> mQuarter[value.toInt() % mQuarter.size] }
