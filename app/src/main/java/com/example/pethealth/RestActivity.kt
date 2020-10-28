@@ -72,8 +72,12 @@ class RestActivity: AppCompatActivity(){
                 )
                 dates.add(valList[i].ac_date)
 
+                colors1.add(MATERIAL_COLORS[0])
+                colors2.add(MATERIAL_COLORS[1])
+
+                /*
                 if( 1500 < valList[i].dailyRestTime   ) {
-                    colors1.add(Color.rgb(0x0C, 0x90, 0xAD))
+                    colors1.add(MATERIAL_COLORS[0])
                 }else{
                     // 0C90AD
                     colors1.add(Color.rgb(145, 224, 244))
@@ -84,6 +88,8 @@ class RestActivity: AppCompatActivity(){
                     // 0C90AD
                     colors2.add(Color.rgb(145, 224, 244))
                 }
+                */
+
             }
         }
 
@@ -101,7 +107,9 @@ class RestActivity: AppCompatActivity(){
                 HomeActivity.analyzedActivityData.dailySleepTime.toFloat()
             )
         )
-
+        colors1.add(MATERIAL_COLORS[0])
+        colors2.add(MATERIAL_COLORS[1])
+        /*
         if(1500 < HomeActivity.analyzedActivityData.dailyRestTime ) {
             colors1.add(Color.rgb(0x0C, 0x90, 0xAD))
 
@@ -114,7 +122,7 @@ class RestActivity: AppCompatActivity(){
         }else{
             colors2.add(Color.rgb(145, 224, 244))
         }
-
+*/
 
         labelList.add(LocalDate.now().format(DateTimeFormatter.ofPattern("MM-dd")).toString())
         dates.add(LocalDate.now())
@@ -142,12 +150,13 @@ class RestActivity: AppCompatActivity(){
         val set1 = BarDataSet(entries1, "평균 심박수")
         set1.setColors(colors1)
         set1.valueTextColor = R.color.colorBlueGreen
-        set1.valueTextSize = 10f
+        set1.valueTextSize = 0f
+
         set1.axisDependency = YAxis.AxisDependency.RIGHT
         val set2 = BarDataSet(entries2, "평균 심박수")
         set2.setColors(colors2)
         set2.valueTextColor = R.color.colorBlueGreen
-        set2.valueTextSize = 10f
+        set2.valueTextSize = 0f
         set2.axisDependency = YAxis.AxisDependency.RIGHT
 
         val data = BarData()
@@ -256,7 +265,7 @@ class RestActivity: AppCompatActivity(){
         val set = BarDataSet(entries, "심박수")
         set.color = Color.rgb(145, 224, 244)
         set.valueTextColor = R.color.colorBlueGreen
-        set.valueTextSize = 10f
+        set.valueTextSize = 0f
         set.axisDependency = YAxis.AxisDependency.RIGHT
 
         val data = BarData(set)

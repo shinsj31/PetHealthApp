@@ -375,7 +375,7 @@ public class HomeActivity: AppCompatActivity() {
         pieChart!!.setExtraOffsets(5f, 10f, 5f, 5f)
         pieChart!!.dragDecelerationFrictionCoef = 0.95f
         pieChart!!.isDrawHoleEnabled = true
-        pieChart!!.setHoleColor(Color.WHITE)
+        //pieChart!!.setHoleColor(Color.WHITE)
         pieChart!!.transparentCircleRadius = 1000f
 
 
@@ -598,10 +598,12 @@ public class HomeActivity: AppCompatActivity() {
         dataSet.sliceSpace = 3f
         dataSet.selectionShift = 5f
 
-
+        var colors : ArrayList<Int> = ArrayList()
+        colors.add(MATERIAL_COLORS[0])
+        colors.add(MATERIAL_COLORS[1])
       //  dataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
-        dataSet.addColor(MATERIAL_COLORS[1])
-        dataSet.addColor(MATERIAL_COLORS[0])
+       // dataSet.addColor(MATERIAL_COLORS[0])
+        dataSet.setColors(colors)
 
         pieChart!!.getLegend().setEnabled(false);
 
@@ -609,7 +611,8 @@ public class HomeActivity: AppCompatActivity() {
 
         val data = PieData(dataSet)
         data.setValueTextSize(10f)
-        data.setValueTextColor(Color.YELLOW)
+
+        data.setValueTextColor(MATERIAL_COLORS[0])
         pieChart!!.data = data
     }
 
@@ -697,7 +700,11 @@ public class HomeActivity: AppCompatActivity() {
                             else
                                 txt_sleep_time.text = (analyzedActivityData.dailySleepTime).toString()+ "분"
 
-                            txt_movement_time.text = analyzedActivityData.movementTime.toString() + " 분"
+                            if(analyzedActivityData.movementTime > 60 )
+                                txt_movement_time.text = (analyzedActivityData.movementTime / 60.0).toInt().toString() +" 시간 " + (analyzedActivityData.movementTime % 60.0).toInt().toString()+ "분"
+                            else
+                                txt_movement_time.text =(analyzedActivityData.movementTime).toString()+ "분"
+
                             txt_movement_distance.text = (analyzedActivityData.distance / 100.0).toInt().toString() + " m"
                         }
                     }

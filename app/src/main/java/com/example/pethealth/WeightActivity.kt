@@ -80,14 +80,31 @@ class WeightActivity: AppCompatActivity(){
 
         var colors1 : ArrayList<Int> = ArrayList()
 
+        entries1.add(Entry(0f, 3.2f ))
+        entries1.add(Entry(1f, 3.1f ))
+        entries1.add(Entry(2f, 3.1f ))
+        entries1.add(Entry(3f, 3.05f ))
+        labelList.add(
+            "09-28"
+        )
+        labelList.add(
+            "10-05"
+        )
+        labelList.add(
+            "10-12"
+        )
+        labelList.add(
+            "10-19"
+        )
+
 
         for (i in 0 until (valList?.size ?: 0)) {
-            entries1.add(Entry(cnt.toFloat(), valList[i].d_weight ))
+            //entries1.add(Entry(cnt.toFloat(), valList[i].d_weight ))
 
             cnt++
-            labelList.add(
-                valList[i].wc_date.format(DateTimeFormatter.ofPattern("MM-dd")).toString()
-            )
+            //labelList.add(
+            //    valList[i].wc_date.format(DateTimeFormatter.ofPattern("MM-dd")).toString()
+            //)
             dates.add(valList[i].wc_date)
 
             if( 3 < valList[i].d_weight   ) {
@@ -184,8 +201,8 @@ class WeightActivity: AppCompatActivity(){
 
         daily_lineChart!!.setVisibleXRangeMaximum(5f); // allow 5 values to be displayed 5개만 보이게
 
-        //daily_barChart!!.axisLeft.axisMinimum = 0f
-        //daily_barChart!!.axisLeft.granularity = 60.0f // 30분 간격?
+        //daily_lineChart!!.axisLeft.axisMinimum = 5f
+        //daily_lineChart!!.axisLeft.granularity = 1f // 30분 간격?
 
         daily_lineChart!!.moveViewToX(labelList.size - 1f - fillCnt);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////

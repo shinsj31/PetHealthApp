@@ -57,6 +57,19 @@ public class AnalyzedActivityData {
         println("!! AnalyzeActivity")
         for(data in datas){
             var recordTime =  data.ac_hour * 60 + data.ac_minute;
+            if(recordTime >= 1440  )
+                break;
+
+
+            if( this.ac_date == LocalDate.now()   ){
+                val date: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+                if(date.hour < data.ac_hour){
+                    continue;
+                }
+                if(date.hour == data.ac_hour && date.minute <= data.ac_hour ){
+                    continue;
+                }
+            }
 
             if( recordTime < recordedWalk.size && recordedWalk[recordTime] == 0){
                 recordedWalk[recordTime] = data.ac_walk;

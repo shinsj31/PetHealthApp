@@ -11,7 +11,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/back_img"
-        android:paddingTop="50dp"
+        android:paddingTop="85dp"
         android:paddingLeft="100dp"
         android:paddingRight="100dp"
         android:paddingBottom="20dp"

@@ -219,7 +219,7 @@ class MovementCountActivity: AppCompatActivity(){
         val set = BarDataSet(entries, "걸음수")
         set.color = Color.rgb(145, 224, 244)
         set.valueTextColor = R.color.colorBlueGreen
-        set.valueTextSize = 10f
+        set.valueTextSize = 0f
         set.axisDependency = YAxis.AxisDependency.RIGHT
 
         val data = BarData(set)

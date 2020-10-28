@@ -169,8 +169,8 @@ class HeartbeatActivity: AppCompatActivity(){
 
         daily_barChart!!.setVisibleXRangeMaximum(5f); // allow 5 values to be displayed 5개만 보이게
 
-        //daily_barChart!!.axisLeft.axisMinimum = 0f
-        //daily_barChart!!.axisLeft.granularity = 60.0f // 30분 간격?
+        daily_barChart!!.axisLeft.axisMinimum = 60f
+        daily_barChart!!.axisLeft.granularity = 3f // 30분 간격?
 
         daily_barChart!!.moveViewToX(labelList.size - 1f - fillCnt);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ class HeartbeatActivity: AppCompatActivity(){
         val set = LineDataSet(entries, "심박수")
         set.color = Color.rgb(145, 224, 244)
         set.valueTextColor = R.color.colorBlueGreen
-        set.valueTextSize = 10f
+        set.valueTextSize = 0f
         set.axisDependency = YAxis.AxisDependency.RIGHT
 
         val data = LineData(set)

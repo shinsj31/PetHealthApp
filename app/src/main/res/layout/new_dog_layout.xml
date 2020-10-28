@@ -109,7 +109,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:background="@drawable/round_border_thin"
-                    android:inputType="textPassword"/>
+                    />
             </LinearLayout>
 
             <!-- E-mail layout -->

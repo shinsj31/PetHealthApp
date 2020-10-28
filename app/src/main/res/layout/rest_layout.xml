@@ -20,6 +20,7 @@ android:layout_height="wrap_content">
                 android:padding="40dp">
 
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -46,6 +47,36 @@ android:layout_height="wrap_content">
                     android:layout_margin="5dp">
 
                 </com.github.mikephil.charting.charts.BarChart>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="휴식시간"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/colorBlueGreen"/>
+
+                    <TextView
+
+
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="취침시간"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/colorSkyBlue"
+                        />
+                </LinearLayout>
 
 
                 <View
@@ -79,6 +110,7 @@ android:layout_height="wrap_content">
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:orientation="horizontal">
+
 
                     <TextView
 
